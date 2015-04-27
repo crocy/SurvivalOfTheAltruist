@@ -3,13 +3,26 @@ using System.Collections;
 
 public class MainController : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+	#region Class fields
+
+	private Creature[] creatures;
+
+	#endregion
+
+	#region Serialized fields
+
+	[SerializeField]
+	private Bounds worldBounds;
+
+	#endregion
+
+    // Use this for initialization
+    private void Awake() {
+		
+    }
 	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    // Update is called once per frame
+    private void Update() {
+		
+    }
 }
