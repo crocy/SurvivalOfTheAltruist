@@ -25,4 +25,13 @@ public class MainController : MonoBehaviour {
     private void Update() {
 		
     }
+
+	#region Unity helpers
+
+	private void OnDrawGizmosSelected() {
+		Gizmos.color = Color.gray;
+		Gizmos.DrawWireCube(worldBounds.center, worldBounds.extents);
+	}
+
+	#endregion
 }
