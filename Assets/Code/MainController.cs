@@ -1,37 +1,42 @@
 ﻿using UnityEngine;
 using System.Collections;
+using SurvivalOfTheAlturist.Creatures;
 
-public class MainController : MonoBehaviour {
+namespace SurvivalOfTheAlturist.Main {
 
-	#region Class fields
+    public class MainController : MonoBehaviour {
 
-	private Creature[] creatures;
+#region Class fields
 
-	#endregion
+        private Creature[] creatures;
 
-	#region Serialized fields
+#endregion
 
-	[SerializeField]
-	private Bounds worldBounds;
+#region Serialized fields
 
-	#endregion
+        [SerializeField]
+        private Bounds worldBounds;
 
-    // Use this for initialization
-    private void Awake() {
+#endregion
+
+        // Use this for initialization
+        private void Awake() {
 		
-    }
+        }
 	
-    // Update is called once per frame
-    private void Update() {
+        // Update is called once per frame
+        private void Update() {
 		
+        }
+
+#region Unity override
+
+        private void OnDrawGizmosSelected() {
+            Gizmos.color = Color.gray;
+            Gizmos.DrawWireCube(worldBounds.center, worldBounds.extents);
+        }
+
+#endregion
     }
 
-	#region Unity helpers
-
-	private void OnDrawGizmosSelected() {
-		Gizmos.color = Color.gray;
-		Gizmos.DrawWireCube(worldBounds.center, worldBounds.extents);
-	}
-
-	#endregion
 }

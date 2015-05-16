@@ -1,47 +1,56 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Creature : MonoBehaviour {
+namespace SurvivalOfTheAlturist.Creatures {
 
-    #region Class fields
+    public class Creature : MonoBehaviour {
 
-    #endregion
+#region Class fields
 
-    #region Serialized fields
+#endregion
 
-	[Header("Base")]
+#region Serialized fields
 
-    [SerializeField]
-    [Range(0, 1)]
-    private float energy = 1f;
+        [Header("Base")]
 
-	[SerializeField]
-    [Range(0, 10)]
-    private float speed = 1f;
+        [SerializeField]
+        [Range(0, 1)]
+        private float energy = 1f;
 
-	[Header("Properties")]
+        [SerializeField]
+        [Range(0, 10)]
+        private float speed = 1f;
 
-	[SerializeField]
-	[Range(0, 1)]
-	private float kindness = 1f;
+        [Header("Properties")]
 
-    [Header("UI")]
+        [SerializeField]
+        [Range(0, 1)]
+        private float kindness = 1f;
 
-    [SerializeField]
-    private SpriteRenderer sprite = null;
+        [Header("UI")]
 
-    #endregion
+        [SerializeField]
+        private SpriteRenderer sprite = null;
 
-    #region Properties
-    #endregion
+#endregion
 
-    // Use this for initialization
-    private void Awake() {
+#region Properties
+
+#endregion
+
+#region Unity override
+
+        // Use this for initialization
+        private void Awake() {
         
-    }
+        }
 	
-    // Update is called once per frame
-    private void Update() {
+        // Update is called once per frame
+        private void Update() {
 	
+        }
+
+#endregion
+
     }
 }

@@ -1,23 +1,38 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EnvEnergy : MonoBehaviour {
+namespace SurvivalOfTheAlturist.Environment {
 
-	#region Serialized fields
+    public class EnvEnergy : MonoBehaviour {
 
-	[SerializeField]
-	[Range (0, 1)]
-	private float energy = 1f;
+#region Class fields
 
-	#endregion
+#endregion
 
-	//	// Use this for initialization
-	//	void Start () {
-	//
-	//	}
-	//
-	//	// Update is called once per frame
-	//	void Update () {
-	//
-	//	}
+#region Serialized fields
+
+        [SerializeField]
+        [Range(0, 1)]
+        private float energy = 1f;
+
+#endregion
+
+#region Properties
+
+#endregion
+
+#region Unity override
+
+#endregion
+
+        //	// Use this for initialization
+        //	void Start () {
+        //
+        //	}
+        //
+        //	// Update is called once per frame
+        //	void Update () {
+        //
+        //	}
+    }
 }
