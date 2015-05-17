@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace SurvivalOfTheAlturist.Environment {
 
-    public class EnvEnergy : MonoBehaviour {
+    public class Energy : EnvironmentObject {
 
 #region Class fields
 
@@ -13,7 +13,7 @@ namespace SurvivalOfTheAlturist.Environment {
 
         [SerializeField]
         [Range(0, 1)]
-        private float energy = 1f;
+        public float energy = 1f;
 
 #endregion
 
