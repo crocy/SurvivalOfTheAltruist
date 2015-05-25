@@ -43,9 +43,9 @@ namespace SurvivalOfTheAlturist {
         
         }
 
-        private void OnDrawGizmosSelected() {
+        private void OnDrawGizmos() {
             Gizmos.color = Color.gray;
-            Gizmos.DrawWireCube(worldBounds.center, worldBounds.extents);
+            Gizmos.DrawWireCube(worldBounds.center, worldBounds.extents * 2);
         }
 
 #endregion

@@ -65,6 +65,8 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         public float Kindness { get { return kindness; } }
 
+        public float DistanceToMoveTo { get { return Vector3.Distance(transform.position, moveTo); } }
+
 #endregion
 
 #region Unity override
@@ -79,6 +81,8 @@ namespace SurvivalOfTheAlturist.Creatures {
         }
 
         private void OnTriggerEnter(Collider other) {
+            Debug.LogFormat("OnTriggerEnter: other = {0}", other);
+
             if (onTriggerEntered != null) {
                 onTriggerEntered(this, other);
             }
@@ -94,6 +98,26 @@ namespace SurvivalOfTheAlturist.Creatures {
         public void InitToRandomValues() {
             energy = UnityEngine.Random.Range(EnergyStartMin, EnergyStartMax);
             // TODO: finish
+        }
+
+        /// <summary>
+        /// Moves the creature closer to the MoveTo position.
+        /// </summary>
+        /// <returns><c>true</c>, if position was updated, <c>false</c> otherwise.</returns>
+        public bool UpdatePosition() {
+            if (DistanceToMoveTo > CreatureController.MinTresholdDistance) {
+                Vector3 diff = MoveTo - transform.position;
+//                Debug.LogFormat("MoveTo = {0}, transform.position = {1}, diff = {2}, normalized = {3}, magnitude = {4}", MoveTo, transform.position, diff, diff.normalized, diff.magnitude);
+                if (diff.magnitude > Speed) {
+                    transform.Translate(diff.normalized * Speed);
+                } else {
+                    transform.position = MoveTo;
+                }
+                
+                return true;
+            }
+
+            return false;
         }
     }
 }

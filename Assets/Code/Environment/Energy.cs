@@ -23,6 +23,10 @@ namespace SurvivalOfTheAlturist.Environment {
 
 #region Unity override
 
+        private void OnTriggerEnter(Collider other) {
+            Debug.LogFormat("OnTriggerEnter: other = {0}", other);
+        }
+
 #endregion
 
         //	// Use this for initialization

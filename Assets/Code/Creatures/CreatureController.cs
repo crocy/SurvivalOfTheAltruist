@@ -9,6 +9,8 @@ namespace SurvivalOfTheAlturist.Creatures {
 
 #region Class fields
 
+        public const float MinTresholdDistance = 0.01f;
+
         private readonly List<Creature> creatures = new List<Creature>();
 
 #endregion
@@ -38,14 +40,9 @@ namespace SurvivalOfTheAlturist.Creatures {
 
 #region Unity override
 
-        // Use this for initialization
-        private void Start() {
-    
-        }
-    
         // Update is called once per frame
         private void FixedUpdate() {
-    
+            UpdateCreaturePositions();
         }
 
 #endregion
@@ -67,20 +64,37 @@ namespace SurvivalOfTheAlturist.Creatures {
         }
 
         private void GenerateCreatures() {
-            creatures.Clear();
+            RemoveAllCreatures();
 
             Creature creature;
             for (int i = 0; i < generateCreatures; i++) {
                 creature = UnityEngine.Object.Instantiate(creaturePrefab);
+                creature.InitToRandomValues();
                 creature.transform.position = mainContoller.GetRandomWorldPosition();
+                creature.MoveTo = mainContoller.GetRandomWorldPosition();
                 creature.OnTriggerEntered = this.OnTriggerEntered;
 
                 creatures.Add(creature);
             }
         }
 
+        public void RemoveAllCreatures() {
+            while (creatures.Count > 0) {
+                RemoveCreature(creatures[0]);
+            }
+        }
+
         public bool RemoveCreature(Creature creature) {
+            Object.Destroy(creature);
             return creatures.Remove(creature);
+        }
+
+        private void UpdateCreaturePositions() {
+            foreach (var item in creatures) {
+                if (!item.UpdatePosition()) {
+                    item.MoveTo = mainContoller.GetRandomWorldPosition();
+                }
+            }
         }
     }
 }

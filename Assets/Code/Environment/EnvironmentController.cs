@@ -35,16 +35,6 @@ namespace SurvivalOfTheAlturist.Environment {
 
 #region Unity override
 
-        // Use this for initialization
-        private void Start() {
-
-        }
-
-        // Update is called once per frame
-        private void Update() {
-
-        }
-
 #endregion
 
         public void Reset() {
@@ -52,7 +42,7 @@ namespace SurvivalOfTheAlturist.Environment {
         }
 
         private void GenerateEnvironment() {
-            environmentObjects.Clear();
+            RemoveAllEnvironmentObjects();
 
             Energy energy;
             for (int i = 0; i < generateEnergy; i++) {
@@ -63,7 +53,14 @@ namespace SurvivalOfTheAlturist.Environment {
             }
         }
 
+        public void RemoveAllEnvironmentObjects() {
+            while (environmentObjects.Count > 0) {
+                RemoveEnvironmentObject(environmentObjects[0]);
+            }
+        }
+
         public bool RemoveEnvironmentObject(EnvironmentObject envObj) {
+            Object.Destroy(envObj);
             return environmentObjects.Remove(envObj);
         }
     }
