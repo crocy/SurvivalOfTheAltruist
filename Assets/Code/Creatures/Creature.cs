@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using SurvivalOfTheAlturist.Environment;
 
 namespace SurvivalOfTheAlturist.Creatures {
 
@@ -15,34 +16,51 @@ namespace SurvivalOfTheAlturist.Creatures {
         public const float KindnessMax = 1f;
 
         private new Rigidbody2D rigidbody2D = null;
+        private float collectionRadius;
 
         private Vector3 moveTo;
         private Action<Creature, Collider2D> onTriggerEntered;
+        private Action<Creature, Energy> onEnergyDetected;
+        private Action<Creature, Energy> onEnergyCollect;
+        private Action<Creature> onEnergyDepleted;
 
 #endregion
 
 #region Serialized fields
 
-        [Header("Base")]
+        [Header("Links")]
 
+        [SerializeField]
+        private SpriteRenderer sprite = null;
+        [SerializeField]
+        private CircleCollider2D baseCollider = null;
+        [SerializeField]
+        private CircleCollider2D energyDetectorCollider = null;
+
+        [Header("Base attributes")]
+
+        [SerializeField]
+        private int groupID = 0;
         [SerializeField]
         [Range(0, EnergyMax)]
         private float energy = 1f;
-
+        /// Energy depletion rate per second.
+        [SerializeField]
+        [Range(0, EnergyMax)]
+        private float energyDepletionRate = 0.03f;
+        [SerializeField]
+        private float energyDetectionRadius = 3f;
         [SerializeField]
         [Range(0, SpeedMax)]
         private float speed = 1f;
+        [SerializeField]
+        private float communicationRadius = 10f;
 
         [Header("Properties")]
 
         [SerializeField]
         [Range(0, KindnessMax)]
         private float kindness = 1f;
-
-        [Header("UI")]
-
-        [SerializeField]
-        private SpriteRenderer sprite = null;
 
 #endregion
 
@@ -57,6 +75,33 @@ namespace SurvivalOfTheAlturist.Creatures {
             get { return onTriggerEntered; }
             set { onTriggerEntered = value; }
         }
+
+        public Action<Creature, Energy> OnEnergyDetected {
+            get { return onEnergyDetected; }
+            set { onEnergyDetected = value; }
+        }
+
+        public Action<Creature, Energy> OnEnergyCollect {
+            get { return onEnergyCollect; }
+            set { onEnergyCollect = value; }
+        }
+
+        public Action<Creature> OnEnergyDepleted {            
+            get { return onEnergyDepleted; }
+            set { onEnergyDepleted = value; }
+        }
+
+        public float EnergyDetectionRadius {
+            get {
+                return energyDetectionRadius;
+            }
+            set {
+                energyDetectionRadius = value;
+                energyDetectorCollider.radius = energyDetectionRadius;
+            }
+        }
+
+        public int GroupID { get { return groupID; } }
 
         public float Energy {
             get { return energy; }
@@ -76,24 +121,51 @@ namespace SurvivalOfTheAlturist.Creatures {
         // Use this for initialization
         private void Awake() {
             rigidbody2D = GetComponent<Rigidbody2D>();
+            collectionRadius = baseCollider.radius;
+
+            EnergyDetectionRadius = energyDetectionRadius;
         }
 
-        //        private void FixedUpdate() {
-        //        }
+        private void FixedUpdate() {
+            if (energy > 0) {
+                energy -= energyDepletionRate * Time.fixedDeltaTime;
+
+                if (energy <= 0) {
+                    energy = 0;
+
+                    if (onEnergyDepleted != null) {
+                        onEnergyDepleted(this);
+                    }
+                }
+            }
+        }
 
         private void OnTriggerEnter2D(Collider2D other) {
 //            Debug.LogFormat("OnTriggerEnter: other = {0}", other);
+            float distance = Vector3.Distance(transform.position, other.transform.position);
+
+            Energy energyObj = other.GetComponent<Energy>();
+            // if distance is grater than the collection radius, we just detected some energy (with the energyDetectorCollider)
+            if (energyObj != null) {
+                if (distance > collectionRadius) {
+                    if (onEnergyDetected != null) {
+                        onEnergyDetected(this, energyObj);
+                        return;
+                    }
+                } else {
+                    if (onEnergyCollect != null) {
+                        onEnergyCollect(this, energyObj);
+                        return;
+                    }
+                }
+                
+            }
 
             if (onTriggerEntered != null) {
                 onTriggerEntered(this, other);
             }
         }
 
-        private void OnCollisionEnter2D(Collision2D collision) {
-            Debug.LogFormat("OnCollisionEnter: collision = {0}", collision);
-        }
-
-        // Update is called once per frame
         private void Update() {
             Vector3 diff = MoveTo - transform.position;
             sprite.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg - 90f);
@@ -102,6 +174,12 @@ namespace SurvivalOfTheAlturist.Creatures {
         private void OnDrawGizmosSelected() {
             Gizmos.color = Color.white;
             Gizmos.DrawLine(transform.position, moveTo);
+
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(transform.position, energyDetectionRadius);
+
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, communicationRadius);
         }
 
 #endregion

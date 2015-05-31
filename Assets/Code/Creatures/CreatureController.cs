@@ -50,14 +50,30 @@ namespace SurvivalOfTheAlturist.Creatures {
 #region Delegates
 
         private void OnTriggerEntered(Creature creature, Collider2D other) {
-//            Debug.LogFormat("OnTriggerEnter: creature = {1}, other = {0}", other, creature);
+//            //            Debug.LogFormat("OnTriggerEnter: creature = {1}, other = {0}", other, creature);
+//
+//            Energy energy = other.GetComponent<Energy>();
+//            if (energy != null) {
+//                Debug.LogFormat("Energy collected = {0}", energy);
+//                creature.Energy += energy.energy;
+//                mainContoller.RemoveEnvironmentObject(energy);
+//            }
+        }
 
-            Energy energy = other.GetComponent<Energy>();
-            if (energy != null) {
-                Debug.LogFormat("energy = {0}", energy);
-                creature.Energy += energy.energy;
-                mainContoller.RemoveEnvironmentObject(energy);
-            }
+        private void OnEnergyDetected(Creature creature, Energy energy) {
+//            Debug.LogFormat("OnEnergyDetected: creature = {0}, energy = {1}", creature, energy);
+            creature.MoveTo = energy.transform.position;
+        }
+
+        private void OnEnergyCollect(Creature creature, Energy energy) {
+//            Debug.LogFormat("OnEnergyCollect: creature = {0}, energy = {1}", creature, energy);
+            creature.Energy += energy.energy;
+            mainContoller.RemoveEnvironmentObject(energy);
+        }
+
+        private void OnEnergyDepleted(Creature creature) {
+//            Debug.LogFormat("OnEnergyDepleted: creature = {0}", creature);
+            RemoveCreature(creature);
         }
 
 #endregion
@@ -73,9 +89,13 @@ namespace SurvivalOfTheAlturist.Creatures {
             for (int i = 0; i < generateCreatures; i++) {
                 creature = UnityEngine.Object.Instantiate(creaturePrefab);
                 creature.InitToRandomValues();
-                creature.transform.position = mainContoller.GetRandomWorldPosition();
-                creature.MoveTo = mainContoller.GetRandomWorldPosition();
+                creature.transform.position = mainContoller.GetRandomWorldPosition(); // start position
+                creature.MoveTo = mainContoller.GetRandomWorldPosition(); // random go to position
+
                 creature.OnTriggerEntered = this.OnTriggerEntered;
+                creature.OnEnergyDetected = this.OnEnergyDetected;
+                creature.OnEnergyCollect = this.OnEnergyCollect;
+                creature.OnEnergyDepleted = this.OnEnergyDepleted;
 
                 creatures.Add(creature);
             }
