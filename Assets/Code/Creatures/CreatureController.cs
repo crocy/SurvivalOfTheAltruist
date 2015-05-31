@@ -49,9 +49,12 @@ namespace SurvivalOfTheAlturist.Creatures {
 
 #region Delegates
 
-        private void OnTriggerEntered(Creature creature, Collider other) {
-            Energy energy = other.gameObject.GetComponent<Energy>();
+        private void OnTriggerEntered(Creature creature, Collider2D other) {
+//            Debug.LogFormat("OnTriggerEnter: creature = {1}, other = {0}", other, creature);
+
+            Energy energy = other.GetComponent<Energy>();
             if (energy != null) {
+                Debug.LogFormat("energy = {0}", energy);
                 creature.Energy += energy.energy;
                 mainContoller.RemoveEnvironmentObject(energy);
             }
@@ -85,7 +88,7 @@ namespace SurvivalOfTheAlturist.Creatures {
         }
 
         public bool RemoveCreature(Creature creature) {
-            Object.Destroy(creature);
+            Object.Destroy(creature.gameObject);
             return creatures.Remove(creature);
         }
 

@@ -14,8 +14,10 @@ namespace SurvivalOfTheAlturist.Creatures {
         public const float SpeedMax = 10f;
         public const float KindnessMax = 1f;
 
+        private new Rigidbody2D rigidbody2D = null;
+
         private Vector3 moveTo;
-        private Action<Creature, Collider> onTriggerEntered;
+        private Action<Creature, Collider2D> onTriggerEntered;
 
 #endregion
 
@@ -51,7 +53,7 @@ namespace SurvivalOfTheAlturist.Creatures {
             set { moveTo = value; }
         }
 
-        public Action<Creature, Collider> OnTriggerEntered {
+        public Action<Creature, Collider2D> OnTriggerEntered {
             get { return onTriggerEntered; }
             set { onTriggerEntered = value; }
         }
@@ -73,27 +75,41 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         // Use this for initialization
         private void Awake() {
-        
+            rigidbody2D = GetComponent<Rigidbody2D>();
         }
 
-        private void FixedUpdate() {
-            
-        }
+        //        private void FixedUpdate() {
+        //        }
 
-        private void OnTriggerEnter(Collider other) {
-            Debug.LogFormat("OnTriggerEnter: other = {0}", other);
+        private void OnTriggerEnter2D(Collider2D other) {
+//            Debug.LogFormat("OnTriggerEnter: other = {0}", other);
 
             if (onTriggerEntered != null) {
                 onTriggerEntered(this, other);
             }
         }
 
+        private void OnCollisionEnter2D(Collision2D collision) {
+            Debug.LogFormat("OnCollisionEnter: collision = {0}", collision);
+        }
+
         // Update is called once per frame
         private void Update() {
-	
+            Vector3 diff = MoveTo - transform.position;
+            sprite.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg - 90f);
+        }
+
+        private void OnDrawGizmosSelected() {
+            Gizmos.color = Color.white;
+            Gizmos.DrawLine(transform.position, moveTo);
         }
 
 #endregion
+
+        public override string ToString() {
+            return string.Format("[{0}: Energy={1}, Speed={2}, Kindness={3}]", 
+                name, Energy, Speed, Kindness);
+        }
 
         public void InitToRandomValues() {
             energy = UnityEngine.Random.Range(EnergyStartMin, EnergyStartMax);
@@ -107,12 +123,15 @@ namespace SurvivalOfTheAlturist.Creatures {
         public bool UpdatePosition() {
             if (DistanceToMoveTo > CreatureController.MinTresholdDistance) {
                 Vector3 diff = MoveTo - transform.position;
+//                Vector2 diff = MoveTo - transform.position;
 //                Debug.LogFormat("MoveTo = {0}, transform.position = {1}, diff = {2}, normalized = {3}, magnitude = {4}", MoveTo, transform.position, diff, diff.normalized, diff.magnitude);
+
                 if (diff.magnitude > Speed) {
-                    transform.Translate(diff.normalized * Speed);
+                    rigidbody2D.MovePosition(diff.normalized * Speed + transform.position);
                 } else {
-                    transform.position = MoveTo;
+                    rigidbody2D.MovePosition(MoveTo);
                 }
+//                sprite.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg - 90f);
                 
                 return true;
             }

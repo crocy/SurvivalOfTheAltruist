@@ -60,7 +60,7 @@ namespace SurvivalOfTheAlturist.Environment {
         }
 
         public bool RemoveEnvironmentObject(EnvironmentObject envObj) {
-            Object.Destroy(envObj);
+            Object.Destroy(envObj.gameObject);
             return environmentObjects.Remove(envObj);
         }
     }
