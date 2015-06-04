@@ -30,6 +30,12 @@ namespace SurvivalOfTheAlturist.Creatures {
         [SerializeField]
         private int generateCreatures = 10;
 
+        [Header("Creature logic")]
+
+        [SerializeField]
+        [Range(0, 1)]
+        private float lowEnergyMark = 0.1f;
+
 #endregion
 
 #region Properties
@@ -42,7 +48,7 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         // Update is called once per frame
         private void FixedUpdate() {
-            UpdateCreaturePositions();
+            UpdateCreatures();
         }
 
 #endregion
@@ -71,6 +77,10 @@ namespace SurvivalOfTheAlturist.Creatures {
             mainContoller.RemoveEnvironmentObject(energy);
         }
 
+        private void OnEnergyLow(Creature creature) {
+            //            Debug.LogFormat("OnEnergyLow: creature = {0}", creature);
+        }
+
         private void OnEnergyDepleted(Creature creature) {
 //            Debug.LogFormat("OnEnergyDepleted: creature = {0}", creature);
             RemoveCreature(creature);
@@ -96,7 +106,7 @@ namespace SurvivalOfTheAlturist.Creatures {
                 creature.OnTriggerEntered = this.OnTriggerEntered;
                 creature.OnEnergyDetected = this.OnEnergyDetected;
                 creature.OnEnergyCollect = this.OnEnergyCollect;
-                creature.OnEnergyDepleted = this.OnEnergyDepleted;
+//                creature.OnEnergyDepleted = this.OnEnergyDepleted;
 
                 creatures.Add(creature);
             }
@@ -113,10 +123,20 @@ namespace SurvivalOfTheAlturist.Creatures {
             return creatures.Remove(creature);
         }
 
-        private void UpdateCreaturePositions() {
-            foreach (var item in creatures) {
-                if (!item.UpdatePosition()) {
-                    item.MoveTo = mainContoller.GetRandomWorldPosition();
+        private void UpdateCreatures() {
+            for (int i = 0; i < creatures.Count; i++) {
+                var creature = creatures[i];
+
+                if (creature.Energy <= 0) {
+                    OnEnergyDepleted(creature);
+                    i--;
+                    continue;
+                } else if (creature.Energy <= lowEnergyMark) {
+                    OnEnergyLow(creature);
+                }
+
+                if (!creature.UpdatePosition()) {
+                    creature.MoveTo = mainContoller.GetRandomWorldPosition();
                 }
             }
         }

@@ -9,6 +9,11 @@ namespace SurvivalOfTheAlturist {
 
 #region Class fields
 
+        private const float MinTimeScale = 0.01f;
+        private const float MaxTimeScale = 10f;
+
+        private float prePauseTimeScale;
+
 #endregion
 
 #region Serialized fields
@@ -29,6 +34,28 @@ namespace SurvivalOfTheAlturist {
 
         public Bounds WorldBounds { get { return worldBounds; } }
 
+        public float TimeScale {
+            get {
+                return Time.timeScale;
+            }
+            set {
+                Time.timeScale = value;
+                Debug.LogFormat("TimeScale = {0}", value);
+            }
+        }
+
+        public bool TimePause {
+            get { return TimeScale == 0; }
+            set {
+                if (value) {
+                    prePauseTimeScale = TimeScale;
+                    TimeScale = 0;
+                } else {
+                    TimeScale = prePauseTimeScale;
+                }
+            }
+        }
+
 #endregion
 
 #region Unity override
@@ -40,7 +67,7 @@ namespace SurvivalOfTheAlturist {
     
         // Update is called once per frame
         private void Update() {
-        
+            UpdateInput();
         }
 
         private void OnDrawGizmos() {
@@ -71,6 +98,45 @@ namespace SurvivalOfTheAlturist {
         public void RemoveEnvironmentObject(EnvironmentObject envObj) {
             environmentController.RemoveEnvironmentObject(envObj);
         }
+
+        private void UpdateInput() {
+            if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.P)) {
+                Reset();
+            } else if (Input.GetKeyDown(KeyCode.Space)) {
+                TimePause = !TimePause;
+            } else if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMinus)) {
+                TimeSlowDown();
+            } else if (Input.GetKeyDown(KeyCode.Plus) || Input.GetKeyDown(KeyCode.KeypadPlus)) {
+                TimeSpeedUp();
+            }
+        }
+
+        public void TimeSlowDown() {
+            if (TimePause) {
+                return;
+            }
+
+            if (TimeScale < MinTimeScale) {
+                TimePause = true;
+                return;
+            }
+
+            TimeScale *= 0.5f;
+        }
+
+        public void TimeSpeedUp() {
+            if (TimePause) {
+                TimeScale = MinTimeScale;
+//                return;
+            }
+
+            TimeScale *= 1.5f;
+            
+            if (TimeScale > MaxTimeScale) {
+                TimeScale = MaxTimeScale;
+            }
+        }
+
     }
 
 }
