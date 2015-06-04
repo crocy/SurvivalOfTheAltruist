@@ -147,7 +147,8 @@ namespace SurvivalOfTheAlturist.Creatures {
             Energy energyObj = other.GetComponent<Energy>();
             // if distance is grater than the collection radius, we just detected some energy (with the energyDetectorCollider)
             if (energyObj != null) {
-                if (distance > collectionRadius) {
+//                Debug.LogFormat("OnTriggerEnter: other = {0}, distance = {1}, collectionRadius = {2}", other, distance, collectionRadius);
+                if (distance > collectionRadius * 2) {
                     if (onEnergyDetected != null) {
                         onEnergyDetected(this, energyObj);
                         return;

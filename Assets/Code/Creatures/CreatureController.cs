@@ -88,6 +88,7 @@ namespace SurvivalOfTheAlturist.Creatures {
             Creature creature;
             for (int i = 0; i < generateCreatures; i++) {
                 creature = UnityEngine.Object.Instantiate(creaturePrefab);
+                creature.name += " (" + i + ")";
                 creature.InitToRandomValues();
                 creature.transform.position = mainContoller.GetRandomWorldPosition(); // start position
                 creature.MoveTo = mainContoller.GetRandomWorldPosition(); // random go to position
