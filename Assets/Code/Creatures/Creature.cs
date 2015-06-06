@@ -129,19 +129,9 @@ namespace SurvivalOfTheAlturist.Creatures {
             EnergyDetectionRadius = energyDetectionRadius;
         }
 
-        private void FixedUpdate() {
-            if (energy > 0) {
-                energy -= energyDepletionRate * Time.fixedDeltaTime;
-
-                if (energy <= 0) {
-                    energy = 0;
-
-                    if (onEnergyDepleted != null) {
-                        onEnergyDepleted(this);
-                    }
-                }
-            }
-        }
+        //        private void FixedUpdate() {
+        //            UpdateEnergy();
+        //        }
 
         private void OnTriggerEnter2D(Collider2D other) {
 //            Debug.LogFormat("OnTriggerEnter: other = {0}", other);
@@ -219,6 +209,22 @@ namespace SurvivalOfTheAlturist.Creatures {
             }
 
             return false;
+        }
+
+        public float UpdateEnergy() {
+            if (energy > 0) {
+                energy -= energyDepletionRate * Time.fixedDeltaTime;
+
+                if (energy <= 0) {
+                    energy = 0;
+
+                    if (onEnergyDepleted != null) {
+                        onEnergyDepleted(this);
+                    }
+                }
+            }
+
+            return energy;
         }
     }
 }

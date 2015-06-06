@@ -85,12 +85,12 @@ namespace SurvivalOfTheAlturist.Creatures {
         }
 
         private void OnEnergyLevelLow(Creature creatureInNeed) {
-            //            Debug.LogFormat("OnEnergyLevelCritical: creature = {0}", creature);
+//            Debug.LogFormat("OnEnergyLevelLow: creature = {0}", creatureInNeed);
             NeedEnergy(creatureInNeed);
         }
 
         private void OnEnergyLevelCritical(Creature creatureInNeed) {
-            //            Debug.LogFormat("OnEnergyLevelCritical: creature = {0}", creature);
+//            Debug.LogFormat("OnEnergyLevelCritical: creature = {0}", creatureInNeed);
             NeedEnergy(creatureInNeed);
         }
 
@@ -142,22 +142,29 @@ namespace SurvivalOfTheAlturist.Creatures {
         }
 
         public bool RemoveCreature(Creature creature) {
-            Debug.LogFormat("Removing creature: {0}", creature);
+            Debug.LogWarningFormat("Removing creature: {0}", creature);
             UnityEngine.Object.Destroy(creature.gameObject);
             return creatures.Remove(creature);
         }
 
         private void UpdateCreatures() {
+            float prevEnergy;
+            float currentEnergy;
+
             for (int i = 0; i < creatures.Count; i++) {
                 var creature = creatures[i];
+                prevEnergy = creature.Energy;
+                currentEnergy = creature.UpdateEnergy();
 
                 if (creature.Energy <= 0) {
                     OnEnergyDepleted(creature);
                     i--;
                     continue;
-                } else if (creature.Energy <= energyLevelCritical) {
+                } else if (currentEnergy <= energyLevelCritical && prevEnergy > energyLevelCritical) {
+                    // trigger only once, once the threshold has been reached
                     OnEnergyLevelCritical(creature);
-                } else if (creature.Energy <= energyLevelLow) {
+                } else if (creature.Energy <= energyLevelLow && prevEnergy > energyLevelLow) {
+                    // trigger only once, once the threshold has been reached
                     OnEnergyLevelLow(creature);
                 }
 
