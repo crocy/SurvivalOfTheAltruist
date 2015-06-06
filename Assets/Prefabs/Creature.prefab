@@ -9,10 +9,10 @@ GameObject:
   m_Component:
   - 4: {fileID: 401022}
   - 114: {fileID: 11470116}
-  - 58: {fileID: 5875464}
   - 50: {fileID: 5075464}
+  - 58: {fileID: 5875464}
   - 58: {fileID: 5867974}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Creature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 490434}
   - 212: {fileID: 21290434}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,8 +120,7 @@ MonoBehaviour:
   energyDepletionRate: .0299999993
   energyDetectionRadius: 3
   speed: 1
-  communicationRadius: 10
-  kindness: 1
+  altruism: 1
 --- !u!212 &21290434
 SpriteRenderer:
   m_ObjectHideFlags: 1
