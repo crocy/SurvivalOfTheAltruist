@@ -11,9 +11,12 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         public const float EnergyStartMin = 0.3f;
         public const float EnergyStartMax = 1f;
-        public const float EnergyMax = 1f;
+        public const float EnergyMax = 10f;
+
         public const float SpeedMax = 10f;
-        public const float KindnessMax = 1f;
+
+        public const float AltruismMax = 1f;
+        public const float AltruisticVery = 1f;
 
         private new Rigidbody2D rigidbody2D = null;
         private float collectionRadius;
@@ -53,14 +56,14 @@ namespace SurvivalOfTheAlturist.Creatures {
         [SerializeField]
         [Range(0, SpeedMax)]
         private float speed = 1f;
-        [SerializeField]
-        private float communicationRadius = 10f;
+        //        [SerializeField]
+        //        private float communicationRadius = 10f;
 
         [Header("Properties")]
 
         [SerializeField]
-        [Range(0, KindnessMax)]
-        private float kindness = 1f;
+        [Range(0, AltruismMax)]
+        private float altruism = 1f;
 
 #endregion
 
@@ -110,7 +113,7 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         public float Speed { get { return speed; } }
 
-        public float Kindness { get { return kindness; } }
+        public float Altruism { get { return altruism; } }
 
         public float DistanceToMoveTo { get { return Vector3.Distance(transform.position, moveTo); } }
 
@@ -169,7 +172,7 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         private void Update() {
             Vector3 diff = MoveTo - transform.position;
-            sprite.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg - 90f);
+            sprite.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg);
         }
 
         private void OnDrawGizmosSelected() {
@@ -179,20 +182,20 @@ namespace SurvivalOfTheAlturist.Creatures {
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(transform.position, energyDetectionRadius);
 
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, communicationRadius);
+//            Gizmos.color = Color.yellow;
+//            Gizmos.DrawWireSphere(transform.position, communicationRadius);
         }
 
 #endregion
 
         public override string ToString() {
-            return string.Format("[{0}: Energy={1}, Speed={2}, Kindness={3}]", 
-                name, Energy, Speed, Kindness);
+            return string.Format("[{0}: Energy={1}, Altruism={2}]", 
+                name, Energy, Altruism);
         }
 
         public void InitToRandomValues() {
             energy = UnityEngine.Random.Range(EnergyStartMin, EnergyStartMax);
-            // TODO: finish
+            altruism = UnityEngine.Random.Range(0, AltruismMax);
         }
 
         /// <summary>
