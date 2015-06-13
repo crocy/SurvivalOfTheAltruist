@@ -85,6 +85,7 @@ namespace SurvivalOfTheAlturist {
             Simulation simulation = SimulationReport.StopSimulationReport();
             Debug.LogWarningFormat("All creatures died - simulation report: \n{0}", simulation.GetReport());
             Debug.Log("Smulation ended. Press 'R' or 'P' to restart the simulation.");
+            SimulationReport.SaveToFile(simulation);
         }
 
 #endregion
@@ -126,6 +127,8 @@ namespace SurvivalOfTheAlturist {
                 Reset();
             } else if (Input.GetKeyDown(KeyCode.S)) {
                 SimulationReport.PrintCurrentReport();
+            } else if (Input.GetKeyDown(KeyCode.O)) {
+                SimulationReport.SaveToFile(SimulationReport.GetCurrentSimulation());
             } else if (Input.GetKeyDown(KeyCode.Space)) {
                 TimePause = !TimePause;
             } else if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMinus)) {

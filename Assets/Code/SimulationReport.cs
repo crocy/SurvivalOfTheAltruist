@@ -1,12 +1,16 @@
 ﻿using AssemblyCSharp;
 using System;
 using UnityEngine;
+using System.IO;
 
 namespace SurvivalOfTheAlturist {
 
     public class SimulationReport {
 
 #region Class fields
+
+        public const string PathToReports = "Reports";
+        public const string ReportsFileName = "Report - {0}";
 
         private static Simulation currentSimulation;
 
@@ -55,6 +59,16 @@ namespace SurvivalOfTheAlturist {
             }
 
             Debug.Log(currentSimulation.GetReport());
+        }
+
+        public static void SaveToFile(Simulation simulation) {
+            string path = PathToReports + "/" + string.Format(ReportsFileName, simulation.Date).Replace(":", ".") + ".txt";
+
+            using (var fileStream = File.CreateText(path)) {
+                fileStream.WriteLine(simulation.GetReport());
+            }
+
+            Debug.LogFormat("Report saved to: {0}", path);
         }
 
     }

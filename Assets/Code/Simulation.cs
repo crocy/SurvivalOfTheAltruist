@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SurvivalOfTheAlturist.Creatures;
 using System.Text;
 using UnityEngine;
+using System.Globalization;
 
 namespace AssemblyCSharp {
 
@@ -10,7 +11,8 @@ namespace AssemblyCSharp {
 
 #region Class fields
 
-        private int id = UnityEngine.Random.Range(0, int.MaxValue);
+        private readonly int id = UnityEngine.Random.Range(0, int.MaxValue);
+        private readonly string date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
         public float startTime;
         public float endTime;
@@ -25,6 +27,8 @@ namespace AssemblyCSharp {
 #region Properties
 
         public int Id { get { return id; } }
+
+        public string Date { get { return date; } }
 
         public float SimulationDuration { get { return endTime - startTime; } }
 
@@ -41,7 +45,7 @@ namespace AssemblyCSharp {
 
         public string GetReport() {
             StringBuilder builder = new StringBuilder();
-            builder.AppendFormat("Simulation: ID = {0}, duration = {1} (start = {2}, end = {3})\n", id, SimulationCurrentDuration, startTime, endTime);
+            builder.AppendFormat("Simulation: ID = {0}, date = {1}, duration = {2} (start = {3}, end = {4})\n", id, date, SimulationCurrentDuration, startTime, endTime);
             builder.AppendFormat("Energy generated: num = {0}, sum = {1}\n", numOfAllEnergy, sumOfAllEnergy);
 
             // sort creatures first by endTime and if that not applicable, by energy
