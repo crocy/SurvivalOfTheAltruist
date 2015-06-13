@@ -47,11 +47,13 @@ namespace SurvivalOfTheAlturist.Environment {
             Energy energy;
             for (int i = 0; i < generateEnergy; i++) {
                 energy = UnityEngine.Object.Instantiate(energyPrefab);
-                energy.name += " (" + i + ")";
+                energy.name = "Energy (" + i + ")";
                 energy.transform.position = mainContoller.GetRandomWorldPosition();
+                SimulationReport.GetCurrentSimulation().sumOfAllEnergy += energy.EnergyAmount;
 
                 environmentObjects.Add(energy);
             }
+            SimulationReport.GetCurrentSimulation().numOfAllEnergy = generateEnergy;
         }
 
         public void RemoveAllEnvironmentObjects() {

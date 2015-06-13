@@ -2,8 +2,15 @@
 using System.Collections;
 using System;
 using SurvivalOfTheAlturist.Environment;
+using System.Text;
 
 namespace SurvivalOfTheAlturist.Creatures {
+
+    public enum CreatureState {
+        Foraging,
+        CollectingEnergy,
+        Dead,
+    }
 
     public class Creature : WorldObject {
 
@@ -18,6 +25,7 @@ namespace SurvivalOfTheAlturist.Creatures {
         public const float AltruismMax = 1f;
         public const float AltruisticVery = 1f;
 
+        private CreatureState state = CreatureState.Foraging;
         private new Rigidbody2D rigidbody2D = null;
         private float collectionRadius;
 
@@ -26,6 +34,8 @@ namespace SurvivalOfTheAlturist.Creatures {
         private Action<Creature, Energy> onEnergyDetected;
         private Action<Creature, Energy> onEnergyCollect;
         private Action<Creature> onEnergyDepleted;
+
+        private float startTime, endTime;
 
 #endregion
 
@@ -68,6 +78,11 @@ namespace SurvivalOfTheAlturist.Creatures {
 #endregion
 
 #region Properties
+
+        public CreatureState State { 
+            get { return state; }
+            set { state = value; }
+        }
 
         public Vector3 MoveTo {
             get { return moveTo; }
@@ -117,6 +132,10 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         public float DistanceToMoveTo { get { return Vector3.Distance(transform.position, moveTo); } }
 
+        public float StartTime { get { return startTime; } }
+
+        public float EndTime { get { return endTime; } }
+
 #endregion
 
 #region Unity override
@@ -127,6 +146,8 @@ namespace SurvivalOfTheAlturist.Creatures {
             collectionRadius = baseCollider.radius;
 
             EnergyDetectionRadius = energyDetectionRadius;
+
+            startTime = Time.time;
         }
 
         //        private void FixedUpdate() {
@@ -179,8 +200,8 @@ namespace SurvivalOfTheAlturist.Creatures {
 #endregion
 
         public override string ToString() {
-            return string.Format("[{0}: Energy={1}, Altruism={2}]", 
-                name, Energy, Altruism);
+            return string.Format("[{0}: State = {1}, Energy = {2}, Altruism = {3}]", 
+                name, state, Energy, Altruism);
         }
 
         public void InitToRandomValues() {
@@ -226,5 +247,17 @@ namespace SurvivalOfTheAlturist.Creatures {
 
             return energy;
         }
+
+        public void KillCreature() {
+            endTime = Time.time;
+            state = CreatureState.Dead;
+        }
+
+        public string GetReportString() {
+            StringBuilder builder = new StringBuilder();
+            builder.AppendFormat("{0}, lifetime = {1} (start = {2}, end = {3})", ToString(), (endTime - startTime), startTime, endTime);
+            return builder.ToString();
+        }
+
     }
 }

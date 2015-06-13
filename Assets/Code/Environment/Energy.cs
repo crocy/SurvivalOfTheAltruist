@@ -13,23 +13,20 @@ namespace SurvivalOfTheAlturist.Environment {
 
         [SerializeField]
         [Range(0, 1)]
-        public float energy = 1f;
+        private float energy = 1f;
 
 #endregion
 
 #region Properties
 
+        public float EnergyAmount {
+            get { return energy; }
+            set { energy = value; }
+        }
+
 #endregion
 
 #region Unity override
-
-        //        private void OnTriggerEnter2D(Collider2D other) {
-        //            Debug.LogFormat("OnTriggerEnter: other = {0}", other);
-        //        }
-        //
-        //        private void OnCollisionEnter2D(Collision2D collision) {
-        //            Debug.LogFormat("OnCollisionEnter: collision = {0}", collision);
-        //        }
 
 #endregion
 

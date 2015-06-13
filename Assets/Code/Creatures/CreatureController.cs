@@ -15,6 +15,8 @@ namespace SurvivalOfTheAlturist.Creatures {
         private readonly List<Creature> creatures = new List<Creature>();
         private readonly Dictionary<int, List<Creature>> groupIdToCreatures = new Dictionary<int, List<Creature>>();
 
+        private Action onAllCreaturesDied;
+
 #endregion
 
 #region Serialized fields
@@ -49,6 +51,11 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         public List<Creature> Creatures { get { return creatures; } }
 
+        public Action OnAllCreaturesDied {
+            get { return onAllCreaturesDied; }
+            set { onAllCreaturesDied = value; }
+        }
+
 #endregion
 
 #region Unity override
@@ -75,13 +82,20 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         private void OnEnergyDetected(Creature creature, Energy energy) {
 //            Debug.LogFormat("OnEnergyDetected: creature = {0}, energy = {1}", creature, energy);
+            if (creature.State == CreatureState.CollectingEnergy) {
+                // already collecting energy, don't get distracted ;)
+                return;
+            }
+            creature.State = CreatureState.CollectingEnergy;
+
             creature.MoveTo = energy.transform.position;
         }
 
         private void OnEnergyCollect(Creature creature, Energy energy) {
 //            Debug.LogFormat("OnEnergyCollect: creature = {0}, energy = {1}", creature, energy);
-            creature.Energy += energy.energy;
+            creature.Energy += energy.EnergyAmount;
             mainContoller.RemoveEnvironmentObject(energy);
+            creature.State = CreatureState.Foraging;
         }
 
         private void OnEnergyLevelLow(Creature creatureInNeed) {
@@ -96,6 +110,7 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         private void OnEnergyDepleted(Creature creature) {
 //            Debug.LogFormat("OnEnergyDepleted: creature = {0}", creature);
+            creature.KillCreature();
             RemoveCreature(creature);
         }
 
@@ -105,6 +120,7 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         public void Reset() {
             GenerateCreatures();
+            gameObject.SetActive(true);
         }
 
         private void GenerateCreatures() {
@@ -115,7 +131,7 @@ namespace SurvivalOfTheAlturist.Creatures {
 
             for (int i = 0; i < generateCreatures; i++) {
                 creature = UnityEngine.Object.Instantiate(creaturePrefab);
-                creature.name += " (" + i + ")";
+                creature.name = "Creature (" + i + ")";
                 creature.InitToRandomValues();
                 creature.transform.position = mainContoller.GetRandomWorldPosition(); // start position
                 creature.MoveTo = mainContoller.GetRandomWorldPosition(); // random go to position
@@ -132,6 +148,8 @@ namespace SurvivalOfTheAlturist.Creatures {
                     groupIdToCreatures.Add(creature.GroupID, list);
                 }
                 list.Add(creature);
+
+                SimulationReport.GetCurrentSimulation().creatures.Add(creature);
             }
         }
 
@@ -143,11 +161,21 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         public bool RemoveCreature(Creature creature) {
             Debug.LogWarningFormat("Removing creature: {0}", creature);
-            UnityEngine.Object.Destroy(creature.gameObject);
+//            UnityEngine.Object.Destroy(creature.gameObject);
+            creature.transform.parent = transform;
+            creature.gameObject.SetActive(false);
             return creatures.Remove(creature);
         }
 
         private void UpdateCreatures() {
+            if (creatures.Count == 0) {
+                if (onAllCreaturesDied != null) {
+                    onAllCreaturesDied();
+                }
+                gameObject.SetActive(false);
+                return;
+            }
+
             float prevEnergy;
             float currentEnergy;
 

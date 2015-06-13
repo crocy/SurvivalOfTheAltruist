@@ -2,6 +2,7 @@
 using System.Collections;
 using SurvivalOfTheAlturist.Creatures;
 using SurvivalOfTheAlturist.Environment;
+using AssemblyCSharp;
 
 namespace SurvivalOfTheAlturist {
 
@@ -62,6 +63,7 @@ namespace SurvivalOfTheAlturist {
 
         // Use this for initialization
         private void Awake() {
+            Init();
             Reset();
         }
     
@@ -77,7 +79,27 @@ namespace SurvivalOfTheAlturist {
 
 #endregion
 
+#region Delegates
+
+        private void OnAllCreaturesDied() {
+            Simulation simulation = SimulationReport.StopSimulationReport();
+            Debug.LogWarningFormat("All creatures died - simulation report: \n{0}", simulation.GetReport());
+            Debug.Log("Smulation ended. Press 'R' or 'P' to restart the simulation.");
+        }
+
+#endregion
+
+        public void Init() {
+            creatureController.OnAllCreaturesDied = this.OnAllCreaturesDied;
+        }
+
         public void Reset() {
+            if (SimulationReport.IsSimulationRunning) {
+                SimulationReport.PrintCurrentReport();
+                SimulationReport.StopSimulationReport();
+            }
+            SimulationReport.StartSimulationReport();
+            
             environmentController.Reset();
             creatureController.Reset();
         }
@@ -102,6 +124,8 @@ namespace SurvivalOfTheAlturist {
         private void UpdateInput() {
             if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.P)) {
                 Reset();
+            } else if (Input.GetKeyDown(KeyCode.S)) {
+                SimulationReport.PrintCurrentReport();
             } else if (Input.GetKeyDown(KeyCode.Space)) {
                 TimePause = !TimePause;
             } else if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMinus)) {
