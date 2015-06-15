@@ -10,6 +10,9 @@ namespace SurvivalOfTheAlturist.Environment {
 
         private readonly List<EnvironmentObject> environmentObjects = new List<EnvironmentObject>();
 
+        private float energyStorageMaxCapacity = 1;
+        private float energyStorage = 0;
+
 #endregion
 
 #region Serialized fields
@@ -25,7 +28,10 @@ namespace SurvivalOfTheAlturist.Environment {
         [Header("Generation logic")]
 
         [SerializeField]
-        private int generateEnergy = 10;
+        private int startEnergy = 10;
+        /// How much energy per second is generated.
+        [SerializeField]
+        private float energyGenerationRate = 0.1f;
 
 #endregion
 
@@ -34,6 +40,15 @@ namespace SurvivalOfTheAlturist.Environment {
 #endregion
 
 #region Unity override
+
+        private void FixedUpdate() {
+            energyStorage += energyGenerationRate * Time.fixedDeltaTime;
+
+            if (energyStorage >= energyStorageMaxCapacity) {
+                GenerateEnergy();
+                energyStorage = 0;
+            }
+        }
 
 #endregion
 
@@ -44,16 +59,9 @@ namespace SurvivalOfTheAlturist.Environment {
         private void GenerateEnvironment() {
             RemoveAllEnvironmentObjects();
 
-            Energy energy;
-            for (int i = 0; i < generateEnergy; i++) {
-                energy = UnityEngine.Object.Instantiate(energyPrefab);
-                energy.name = "Energy (" + i + ")";
-                energy.transform.position = mainContoller.GetRandomWorldPosition();
-                SimulationReport.GetCurrentSimulation().sumOfAllEnergy += energy.EnergyAmount;
-
-                environmentObjects.Add(energy);
+            for (int i = 0; i < startEnergy; i++) {
+                GenerateEnergy();
             }
-            SimulationReport.GetCurrentSimulation().numOfAllEnergy = generateEnergy;
         }
 
         public void RemoveAllEnvironmentObjects() {
@@ -65,6 +73,17 @@ namespace SurvivalOfTheAlturist.Environment {
         public bool RemoveEnvironmentObject(EnvironmentObject envObj) {
             Object.Destroy(envObj.gameObject);
             return environmentObjects.Remove(envObj);
+        }
+
+        private Energy GenerateEnergy() {
+            Energy energy = UnityEngine.Object.Instantiate(energyPrefab);
+//            energy.name = "Energy (" + i + ")";
+            energy.name = "Energy (" + (SimulationReport.GetCurrentSimulation().numOfAllEnergy++) + ")";
+            energy.transform.position = mainContoller.GetRandomWorldPosition();
+            SimulationReport.GetCurrentSimulation().sumOfAllEnergy += energy.EnergyAmount;
+
+            environmentObjects.Add(energy);
+            return energy;
         }
     }
 }

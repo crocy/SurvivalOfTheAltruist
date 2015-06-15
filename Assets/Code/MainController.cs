@@ -11,7 +11,7 @@ namespace SurvivalOfTheAlturist {
 #region Class fields
 
         private const float MinTimeScale = 0.01f;
-        private const float MaxTimeScale = 10f;
+        private const float MaxTimeScale = 20f;
 
         private float prePauseTimeScale;
 
