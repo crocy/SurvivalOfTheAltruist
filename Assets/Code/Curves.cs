@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
-using SurvivalOfTheAlturist.Creatures;
 
 namespace SurvivalOfTheAlturist {
 
@@ -11,6 +9,13 @@ namespace SurvivalOfTheAlturist {
 #endregion
 
 #region Serialized fields
+
+        [Header("Energy generator")]
+
+        /// x axis - time
+        /// y axis - energy generation rate
+        [SerializeField]
+        private AnimationCurve energyGenerationRate = null;
 
         [Header("Creature behavior")]
 
@@ -29,6 +34,10 @@ namespace SurvivalOfTheAlturist {
 #region Properties
 
 #endregion
+
+        public float EnergyGenerationRate(float time) {
+            return energyGenerationRate.Evaluate(time);
+        }
 
         public float AltruismToEnergyGivePercent(float altruism) {
             return altruismToEnergyGive.Evaluate(altruism);

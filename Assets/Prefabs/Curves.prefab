@@ -39,6 +39,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d721bd486344a8c46ae7e23d57c1d391, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  energyGenerationRate:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: .501779258
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1.99784184
+      value: .000541567802
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 2
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 25
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 25.9944534
+      value: .0981088728
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
   altruismToEnergyGive:
     serializedVersion: 2
     m_Curve:

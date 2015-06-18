@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using SurvivalOfTheAlturist.Creatures;
 using System.Text;
 using UnityEngine;
-using System.Globalization;
 
-namespace AssemblyCSharp {
+namespace SurvivalOfTheAlturist {
 
     public class Simulation {
 
@@ -29,6 +28,8 @@ namespace AssemblyCSharp {
         public int Id { get { return id; } }
 
         public string Date { get { return date; } }
+
+        public float CurrentTime { get { return UnityEngine.Time.time - startTime; } }
 
         public float SimulationDuration { get { return endTime - startTime; } }
 

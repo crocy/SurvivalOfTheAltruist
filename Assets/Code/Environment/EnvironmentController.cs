@@ -19,6 +19,8 @@ namespace SurvivalOfTheAlturist.Environment {
 
         [SerializeField]
         private MainController mainContoller = null;
+        [SerializeField]
+        private Curves curves = null;
 
         [Header("Prefabs")]
 
@@ -29,20 +31,27 @@ namespace SurvivalOfTheAlturist.Environment {
 
         [SerializeField]
         private int startEnergy = 10;
-        /// How much energy per second is generated.
-        [SerializeField]
-        private float energyGenerationRate = 0.1f;
+        //        /// How much energy per second is generated.
+        //        [SerializeField]
+        //        private float energyGenerationRate = 0.1f;
 
 #endregion
 
 #region Properties
+
+        public float CurrentEnergyGenerationRate { get { return curves.EnergyGenerationRate(SimulationReport.GetCurrentSimulation().CurrentTime); } }
 
 #endregion
 
 #region Unity override
 
         private void FixedUpdate() {
-            energyStorage += energyGenerationRate * Time.fixedDeltaTime;
+            if (!SimulationReport.IsSimulationRunning) {
+                return;
+            }
+
+//            energyStorage += energyGenerationRate * Time.fixedDeltaTime;
+            energyStorage += CurrentEnergyGenerationRate * Time.fixedDeltaTime;
 
             if (energyStorage >= energyStorageMaxCapacity) {
                 GenerateEnergy();

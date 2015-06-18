@@ -62,6 +62,10 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         // Update is called once per frame
         private void FixedUpdate() {
+            if (!SimulationReport.IsSimulationRunning) {
+                return;
+            }
+
             UpdateCreatures();
         }
 

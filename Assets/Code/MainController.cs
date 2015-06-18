@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 using SurvivalOfTheAlturist.Creatures;
 using SurvivalOfTheAlturist.Environment;
-using AssemblyCSharp;
 
 namespace SurvivalOfTheAlturist {
 
