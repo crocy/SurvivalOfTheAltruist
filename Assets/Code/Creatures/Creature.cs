@@ -12,7 +12,7 @@ namespace SurvivalOfTheAlturist.Creatures {
         Dead,
     }
 
-    public class Creature : WorldObject {
+    public class Creature : WorldObject, IReport {
 
 #region Class fields
 
@@ -22,6 +22,7 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         public const float SpeedMax = 10f;
 
+        public const float AltruismMin = 0f;
         public const float AltruismMax = 1f;
         public const float AltruisticVery = 1f;
 
@@ -36,6 +37,8 @@ namespace SurvivalOfTheAlturist.Creatures {
         private Action<Creature> onEnergyDepleted;
 
         private float startTime, endTime;
+        private float energyCollected;
+        private float energyShared;
 
 #endregion
 
@@ -119,16 +122,22 @@ namespace SurvivalOfTheAlturist.Creatures {
             }
         }
 
-        public int GroupID { get { return groupID; } }
+        public int GroupID { 
+            get { return groupID; }
+            set { groupID = value; }
+        }
 
         public float Energy {
             get { return energy; }
-            set { energy = value; }
+//            set { energy = value; }
         }
 
         public float Speed { get { return speed; } }
 
-        public float Altruism { get { return altruism; } }
+        public float Altruism { 
+            get { return altruism; }
+            set { altruism = value; }
+        }
 
         public float DistanceToMoveTo { get { return Vector3.Distance(transform.position, moveTo); } }
 
@@ -199,14 +208,36 @@ namespace SurvivalOfTheAlturist.Creatures {
 
 #endregion
 
+#region IReport implementation
+
+        public string GetReport() {
+            StringBuilder builder = new StringBuilder();
+
+            if (endTime > 0) {
+                builder.AppendFormat("{0}, lifetime = {1:0.00}", ToString(), (endTime - startTime));
+            } else {
+                builder.AppendFormat("{0}, lifetime = {1:0.00}", ToString(), (Time.time - startTime));
+            }
+
+            if (startTime > 0) {
+                builder.AppendFormat(" (start = {0}, end = {1})", startTime, endTime);
+            }
+
+            builder.AppendFormat(", energy: collected = {0:0.000}, shared = {1:0.000}", energyCollected, energyShared);
+
+            return builder.ToString();
+        }
+
+#endregion
+
         public override string ToString() {
-            return string.Format("[{0}: State = {1}, Energy = {2}, Altruism = {3}]", 
+            return string.Format("[{0}: State = {1}, Energy = {2}, Altruism = {3:0.000}]", 
                 name, state, Energy, Altruism);
         }
 
         public void InitToRandomValues() {
+            altruism = UnityEngine.Random.Range(AltruismMin, AltruismMax);
             energy = UnityEngine.Random.Range(EnergyStartMin, EnergyStartMax);
-            altruism = UnityEngine.Random.Range(0, AltruismMax);
         }
 
         /// <summary>
@@ -253,10 +284,14 @@ namespace SurvivalOfTheAlturist.Creatures {
             state = CreatureState.Dead;
         }
 
-        public string GetReportString() {
-            StringBuilder builder = new StringBuilder();
-            builder.AppendFormat("{0}, lifetime = {1} (start = {2}, end = {3})", ToString(), (endTime - startTime), startTime, endTime);
-            return builder.ToString();
+        public void CollectEnergy(float energy) {
+            this.energy += energy;
+            energyCollected += energy;
+        }
+
+        public void ShareEnergy(float energy) {
+            this.energy -= energy;
+            energyShared += energy;
         }
 
     }

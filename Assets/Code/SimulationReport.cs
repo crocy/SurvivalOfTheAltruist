@@ -62,12 +62,13 @@ namespace SurvivalOfTheAlturist {
 
         public static void SaveToFile(Simulation simulation) {
             string path = PathToReports + "/" + string.Format(ReportsFileName, simulation.Date).Replace(":", ".") + ".txt";
+            string report = simulation.GetReport();
 
             using (var fileStream = File.CreateText(path)) {
-                fileStream.WriteLine(simulation.GetReport());
+                fileStream.WriteLine(report);
             }
 
-            Debug.LogFormat("Report saved to: {0}", path);
+            Debug.LogFormat("Report saved to: {0}\nReport:\n{1}", path, report);
         }
 
     }

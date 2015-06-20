@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SurvivalOfTheAlturist.Environment {
 
-    public class EnvironmentController : MonoBehaviour {
+    public class EnvironmentController : MonoBehaviour, IController {
 
 #region Class fields
 
@@ -61,9 +61,13 @@ namespace SurvivalOfTheAlturist.Environment {
 
 #endregion
 
+#region IController implementation
+
         public void Reset() {
             GenerateEnvironment();
         }
+
+#endregion
 
         private void GenerateEnvironment() {
             RemoveAllEnvironmentObjects();

@@ -6,20 +6,22 @@ using UnityEngine;
 
 namespace SurvivalOfTheAlturist {
 
-    public class Simulation {
+    public class Simulation : IReport {
 
 #region Class fields
 
+        //        public readonly List<Creature> creatures = new List<Creature>();
+        public readonly List<Group> groups = new List<Group>();
+
         private readonly int id = UnityEngine.Random.Range(0, int.MaxValue);
         private readonly string date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        private readonly int randomSeed = UnityEngine.Random.seed;
 
         public float startTime;
         public float endTime;
 
         public int numOfAllEnergy;
         public float sumOfAllEnergy;
-
-        public List<Creature> creatures = new List<Creature>();
 
 #endregion
 
@@ -44,33 +46,31 @@ namespace SurvivalOfTheAlturist {
 
 #endregion
 
+#region IReport implementation
+
         public string GetReport() {
             StringBuilder builder = new StringBuilder();
-            builder.AppendFormat("Simulation: ID = {0}, date = {1}, duration = {2} (start = {3}, end = {4})\n", id, date, SimulationCurrentDuration, startTime, endTime);
-            builder.AppendFormat("Energy generated: num = {0}, sum = {1}\n", numOfAllEnergy, sumOfAllEnergy);
-
-            // sort creatures first by endTime and if that not applicable, by energy
-            creatures.Sort(delegate(Creature x, Creature y) {
-                if (x.State != CreatureState.Dead) {
-                    if (y.State != CreatureState.Dead) {
-                        return (int)Mathf.Sign(y.Energy - x.Energy);
-                    } else {
-                        return -1;
-                    }
-                } else if (y.State != CreatureState.Dead) {
-                    return 1;
-                }
-                
-                return (int)Mathf.Sign(y.EndTime - x.EndTime);
-            });
-
-            builder.AppendFormat("Creatures: num = {0}\n", creatures.Count);
-            foreach (var item in creatures) {
-                builder.AppendFormat("{0}\n", item.GetReportString());
+            builder.AppendFormat("Simulation: ID = {0}, date = {1}, duration = {2}, random seed = {3}", id, date, SimulationCurrentDuration, randomSeed);
+            if (startTime > 0) {
+                builder.AppendFormat(" (start = {0}, end = {1})", startTime, endTime);
             }
+            builder.AppendFormat("\n\n");
+            builder.AppendFormat("Energy generated: num = {0}, sum = {1}\n\n", numOfAllEnergy, sumOfAllEnergy);
+
+            builder.AppendFormat("Groups: num = {0}\n", groups.Count);
+            foreach (var item in groups) {
+                builder.AppendFormat("{0}\n\n", item.GetReport());
+            }
+
+//            builder.AppendFormat("Creatures: num = {0}\n", creatures.Count);
+//            foreach (var item in creatures) {
+//                builder.AppendFormat("{0}\n", item.GetReport());
+//            }
 
             return builder.ToString();
         }
+
+#endregion
 
     }
 }

@@ -6,7 +6,7 @@ using System;
 
 namespace SurvivalOfTheAlturist.Creatures {
 
-    public class CreatureController : MonoBehaviour {
+    public class CreatureController : MonoBehaviour, IController {
 
 #region Class fields
 
@@ -71,6 +71,16 @@ namespace SurvivalOfTheAlturist.Creatures {
 
 #endregion
 
+#region IController implementation
+
+        public void Reset() {
+            //            GenerateCreatures();
+            RemoveAllCreatures();
+            gameObject.SetActive(true);
+        }
+
+#endregion
+
 #region Delegates
 
         private void OnTriggerEntered(Creature creature, Collider2D other) {
@@ -97,7 +107,7 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         private void OnEnergyCollect(Creature creature, Energy energy) {
 //            Debug.LogFormat("OnEnergyCollect: creature = {0}, energy = {1}", creature, energy);
-            creature.Energy += energy.EnergyAmount;
+            creature.CollectEnergy(energy.EnergyAmount);
             mainContoller.RemoveEnvironmentObject(energy);
             creature.State = CreatureState.Foraging;
         }
@@ -122,39 +132,42 @@ namespace SurvivalOfTheAlturist.Creatures {
 
 #region Generate/update/remove logic
 
-        public void Reset() {
-            GenerateCreatures();
-            gameObject.SetActive(true);
-        }
-
         private void GenerateCreatures() {
             RemoveAllCreatures();
 
             Creature creature;
-            List<Creature> list;
 
             for (int i = 0; i < generateCreatures; i++) {
-                creature = UnityEngine.Object.Instantiate(creaturePrefab);
+                creature = GenerateCreature(0);
                 creature.name = "Creature (" + i + ")";
-                creature.InitToRandomValues();
-                creature.transform.position = mainContoller.GetRandomWorldPosition(); // start position
-                creature.MoveTo = mainContoller.GetRandomWorldPosition(); // random go to position
-
-                creature.OnTriggerEntered = this.OnTriggerEntered;
-                creature.OnEnergyDetected = this.OnEnergyDetected;
-                creature.OnEnergyCollect = this.OnEnergyCollect;
-//                creature.OnEnergyDepleted = this.OnEnergyDepleted; // not using atm
-
-                creatures.Add(creature);
-
-                if (!groupIdToCreatures.TryGetValue(creature.GroupID, out list)) {
-                    list = new List<Creature>();
-                    groupIdToCreatures.Add(creature.GroupID, list);
-                }
-                list.Add(creature);
-
-                SimulationReport.GetCurrentSimulation().creatures.Add(creature);
             }
+        }
+
+        public Creature GenerateCreature(int groupID) {
+            Creature creature;
+            List<Creature> list;
+
+            creature = UnityEngine.Object.Instantiate(creaturePrefab);
+            creature.GroupID = groupID;
+            creature.InitToRandomValues();
+            creature.transform.position = mainContoller.GetRandomWorldPosition(); // start position
+            creature.MoveTo = mainContoller.GetRandomWorldPosition(); // random go to position
+
+            creature.OnTriggerEntered = this.OnTriggerEntered;
+            creature.OnEnergyDetected = this.OnEnergyDetected;
+            creature.OnEnergyCollect = this.OnEnergyCollect;
+            //                creature.OnEnergyDepleted = this.OnEnergyDepleted; // not using atm
+
+            creatures.Add(creature);
+
+            if (!groupIdToCreatures.TryGetValue(creature.GroupID, out list)) {
+                list = new List<Creature>();
+                groupIdToCreatures.Add(creature.GroupID, list);
+            }
+            list.Add(creature);
+
+            //                SimulationReport.GetCurrentSimulation().creatures.Add(creature);
+            return creature;
         }
 
         public void RemoveAllCreatures() {
@@ -285,8 +298,8 @@ namespace SurvivalOfTheAlturist.Creatures {
                 // exchange energy
                 // TODO: don't have this as an instant transfer?
                 Debug.LogFormat("Energy to be shared: creatureInNeed = {0}, creatureToGive = {1}", creatureInNeed, bestMatch);
-                creatureInNeed.Energy += energyNeeded;
-                bestMatch.Energy -= energyNeeded;
+                creatureInNeed.CollectEnergy(energyNeeded);
+                bestMatch.ShareEnergy(energyNeeded);
                 Debug.LogFormat("Energy shared: energy exchanged = {0}, creatureInNeed = {1}, creatureToGive = {2}", energyNeeded, creatureInNeed, bestMatch);
 
             } else {

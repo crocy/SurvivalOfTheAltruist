@@ -4,7 +4,7 @@ using SurvivalOfTheAlturist.Environment;
 
 namespace SurvivalOfTheAlturist {
 
-    public class MainController : MonoBehaviour {
+    public class MainController : MonoBehaviour, IController {
 
 #region Class fields
 
@@ -25,13 +25,22 @@ namespace SurvivalOfTheAlturist {
         [SerializeField]
         private CreatureController creatureController = null;
         [SerializeField]
+        private GroupController groupController = null;
+        [SerializeField]
         private EnvironmentController environmentController = null;
+
+        [Header("Properties")]
+
+        [SerializeField]
+        private int randomSeedOverride = 0;
 
 #endregion
 
 #region Properties
 
         public Bounds WorldBounds { get { return worldBounds; } }
+
+        public CreatureController CreatureController { get { return creatureController; } }
 
         public float TimeScale {
             get {
@@ -54,6 +63,8 @@ namespace SurvivalOfTheAlturist {
                 }
             }
         }
+
+        public int RandomSeedOverride { get { return randomSeedOverride; } }
 
 #endregion
 
@@ -88,19 +99,28 @@ namespace SurvivalOfTheAlturist {
 
 #endregion
 
-        public void Init() {
-            creatureController.OnAllCreaturesDied = this.OnAllCreaturesDied;
-        }
+#region IController implementation
 
         public void Reset() {
+            if (randomSeedOverride != 0) {
+                UnityEngine.Random.seed = randomSeedOverride;
+            }
+
             if (SimulationReport.IsSimulationRunning) {
                 SimulationReport.PrintCurrentReport();
                 SimulationReport.StopSimulationReport();
             }
             SimulationReport.StartSimulationReport();
-            
+
             environmentController.Reset();
             creatureController.Reset();
+            groupController.Reset();
+        }
+
+#endregion
+
+        public void Init() {
+            creatureController.OnAllCreaturesDied = this.OnAllCreaturesDied;
         }
 
         public Vector3 GetRandomWorldPosition() {
