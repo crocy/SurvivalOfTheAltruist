@@ -65,6 +65,8 @@ namespace SurvivalOfTheAlturist.Environment {
 
         public void Reset() {
             GenerateEnvironment();
+
+            gameObject.SetActive(true);
         }
 
 #endregion

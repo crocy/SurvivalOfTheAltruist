@@ -57,7 +57,7 @@ namespace SurvivalOfTheAlturist {
             builder.AppendFormat("\n\n");
             builder.AppendFormat("Energy generated: num = {0}, sum = {1}\n\n", numOfAllEnergy, sumOfAllEnergy);
 
-            builder.AppendFormat("Groups: num = {0}\n", groups.Count);
+            builder.AppendFormat("Groups: num = {0}\n\n", groups.Count);
             foreach (var item in groups) {
                 builder.AppendFormat("{0}\n\n", item.GetReport());
             }

@@ -33,6 +33,8 @@ namespace SurvivalOfTheAlturist {
 
         [SerializeField]
         private int randomSeedOverride = 0;
+        [SerializeField]
+        private int simulationMaxTime = 600;
 
 #endregion
 
@@ -75,7 +77,13 @@ namespace SurvivalOfTheAlturist {
             Init();
             Reset();
         }
-    
+
+        private void FixedUpdate() {
+            if (SimulationReport.IsSimulationRunning && SimulationReport.GetCurrentSimulation().CurrentTime > simulationMaxTime) {
+                StopSimulation();
+            }
+        }
+
         // Update is called once per frame
         private void Update() {
             UpdateInput();
@@ -91,10 +99,8 @@ namespace SurvivalOfTheAlturist {
 #region Delegates
 
         private void OnAllCreaturesDied() {
-            Simulation simulation = SimulationReport.StopSimulationReport();
-            Debug.LogWarningFormat("All creatures died - simulation report: \n{0}", simulation.GetReport());
-            Debug.Log("Smulation ended. Press 'R' or 'P' to restart the simulation.");
-            SimulationReport.SaveToFile(simulation);
+            Debug.LogWarningFormat("All creatures died");
+            StopSimulation();
         }
 
 #endregion
@@ -107,14 +113,14 @@ namespace SurvivalOfTheAlturist {
             }
 
             if (SimulationReport.IsSimulationRunning) {
-                SimulationReport.PrintCurrentReport();
-                SimulationReport.StopSimulationReport();
+                Debug.LogWarning("Simulation timed out");
+                StopSimulation();
             }
             SimulationReport.StartSimulationReport();
 
             environmentController.Reset();
-            creatureController.Reset();
-            groupController.Reset();
+            creatureController.Reset(); // removes all creatures - must be called before "groupController.Reset()"
+            groupController.Reset(); // generates all groups and creatures
         }
 
 #endregion
@@ -182,6 +188,16 @@ namespace SurvivalOfTheAlturist {
             }
         }
 
+        private void StopSimulation() {
+            if (SimulationReport.IsSimulationRunning) {
+                SimulationReport.SaveToFile(SimulationReport.StopSimulationReport());
+                Debug.Log("Smulation ended. Press 'R' or 'P' to restart the simulation.");
+            }
+
+            environmentController.gameObject.SetActive(false);
+            creatureController.gameObject.SetActive(false);
+            groupController.gameObject.SetActive(false);
+        }
     }
 
 }

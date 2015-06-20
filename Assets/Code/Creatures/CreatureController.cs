@@ -297,13 +297,13 @@ namespace SurvivalOfTheAlturist.Creatures {
 
                 // exchange energy
                 // TODO: don't have this as an instant transfer?
-                Debug.LogFormat("Energy to be shared: creatureInNeed = {0}, creatureToGive = {1}", creatureInNeed, bestMatch);
+//                Debug.LogFormat("Energy to be shared: creatureInNeed = {0}, creatureToGive = {1}", creatureInNeed, bestMatch);
                 creatureInNeed.CollectEnergy(energyNeeded);
                 bestMatch.ShareEnergy(energyNeeded);
-                Debug.LogFormat("Energy shared: energy exchanged = {0}, creatureInNeed = {1}, creatureToGive = {2}", energyNeeded, creatureInNeed, bestMatch);
+//                Debug.LogFormat("Energy shared: energy exchanged = {0}, creatureInNeed = {1}, creatureToGive = {2}", energyNeeded, creatureInNeed, bestMatch);
 
             } else {
-                Debug.LogFormat("No creature would to share energy with: {0}", creatureInNeed);
+//                Debug.LogFormat("No creature would to share energy with: {0}", creatureInNeed);
             }
         }
 

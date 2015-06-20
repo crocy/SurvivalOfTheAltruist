@@ -25,9 +25,9 @@ namespace SurvivalOfTheAlturist {
             }
         }
 
-        //        public override bool RequiresConstantRepaint() {
-        //            return true;
-        //        }
+        public override bool RequiresConstantRepaint() {
+            return true;
+        }
     }
 }
 
