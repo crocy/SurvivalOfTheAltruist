@@ -20,7 +20,12 @@ namespace SurvivalOfTheAlturist.Creatures {
         public const float EnergyStartMax = 1f;
         public const float EnergyMax = 10f;
 
+        public const float SpeedToEnergyDepletionRatio = 0.03f;
+        public const float SpeedStartMin = 0.3f;
+        public const float SpeedStartMax = 3f;
         public const float SpeedMax = 10f;
+        public const float SpeedFactorOnEnergyLevelLow = 0.75f;
+        public const float SpeedFactorOnEnergyLevelCritical = 0.5f;
 
         public const float AltruismMin = 0f;
         public const float AltruismMax = 1f;
@@ -39,6 +44,10 @@ namespace SurvivalOfTheAlturist.Creatures {
         private float startTime, endTime;
         private float energyCollected;
         private float energyShared;
+        private float energyLevelLow;
+        private float energyLevelCritical;
+
+        private float speed;
 
 #endregion
 
@@ -68,7 +77,7 @@ namespace SurvivalOfTheAlturist.Creatures {
         private float energyDetectionRadius = 3f;
         [SerializeField]
         [Range(0, SpeedMax)]
-        private float speed = 1f;
+        private float speedBase = 1f;
         //        [SerializeField]
         //        private float communicationRadius = 10f;
 
@@ -132,7 +141,13 @@ namespace SurvivalOfTheAlturist.Creatures {
 //            set { energy = value; }
         }
 
-        public float Speed { get { return speed; } }
+        public float Speed { 
+            get { return speed; }
+            set {
+                speed = value;
+                energyDepletionRate = SpeedToEnergyDepletionRatio * speed;
+            }
+        }
 
         public float Altruism { 
             get { return altruism; }
@@ -146,6 +161,16 @@ namespace SurvivalOfTheAlturist.Creatures {
         public float EndTime { get { return endTime; } }
 
         public float EnergyDepletionRate { get { return energyDepletionRate; } }
+
+        public float EnergyLevelLow {
+            get { return energyLevelLow; }
+            set { energyLevelLow = value; }
+        }
+
+        public float EnergyLevelCritical {
+            get { return energyLevelCritical; }
+            set { energyLevelCritical = value; }
+        }
 
 #endregion
 
@@ -233,13 +258,18 @@ namespace SurvivalOfTheAlturist.Creatures {
 #endregion
 
         public override string ToString() {
-            return string.Format("[{0}: State = {1}, Energy = {2}, Altruism = {3:0.000}]", 
-                name, state, Energy, Altruism);
+            return string.Format("[{0}: State = {1}, Energy = {2}, Altruism = {3:0.000}, SpeedBase = {4:0.00}]", 
+                name, state, Energy, Altruism, speedBase);
         }
 
-        public void InitToRandomValues() {
+        public void InitToRandomValues(float energyLevelLow, float energyLevelCritical) {
+            this.energyLevelLow = energyLevelLow;
+            this.energyLevelCritical = energyLevelCritical;
+
             altruism = UnityEngine.Random.Range(AltruismMin, AltruismMax);
             energy = UnityEngine.Random.Range(EnergyStartMin, EnergyStartMax);
+            speedBase = UnityEngine.Random.Range(SpeedStartMin, SpeedStartMax);
+            Speed = speedBase; // to update energy drain value
         }
 
         /// <summary>
@@ -275,6 +305,15 @@ namespace SurvivalOfTheAlturist.Creatures {
                     if (onEnergyDepleted != null) {
                         onEnergyDepleted(this);
                     }
+                }
+
+                // reduce speed by a fixed factor if enery level low/critical
+                if (energy <= energyLevelCritical) {
+                    Speed = speedBase * SpeedFactorOnEnergyLevelCritical;
+                } else if (energy <= energyLevelLow) {
+                    Speed = speedBase * SpeedFactorOnEnergyLevelLow;
+                } else {
+                    Speed = speedBase;
                 }
             }
 

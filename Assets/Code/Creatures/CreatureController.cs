@@ -159,7 +159,7 @@ namespace SurvivalOfTheAlturist.Creatures {
 
             creature = UnityEngine.Object.Instantiate(creaturePrefab);
             creature.GroupID = groupID;
-            creature.InitToRandomValues();
+            creature.InitToRandomValues(energyLevelLow, energyLevelCritical);
             creature.transform.position = mainContoller.GetRandomWorldPosition(); // start position
             creature.MoveTo = mainContoller.GetRandomWorldPosition(); // random go to position
 
