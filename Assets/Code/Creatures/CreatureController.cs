@@ -56,6 +56,16 @@ namespace SurvivalOfTheAlturist.Creatures {
             set { onAllCreaturesDied = value; }
         }
 
+        public float EnergyDepletionRateSum {
+            get {
+                float depletionSum = 0;
+                foreach (var creature in Creatures) {
+                    depletionSum += creature.EnergyDepletionRate;
+                }
+                return depletionSum;
+            }
+        }
+
 #endregion
 
 #region Unity override
@@ -294,17 +304,23 @@ namespace SurvivalOfTheAlturist.Creatures {
             if (bestMatch != null) {
                 // check how much of the offered energy would creatureInNeed take
                 float energyNeeded = EnergyNeededAmount(creatureInNeed, bestEnergyOffered);
+                float energyLoss = EnergySharingLoss(creatureInNeed, bestMatch);
+//                Debug.LogFormat("Energy to be shared: {0}, energyLoss = {1}", energyNeeded, energyLoss);
 
                 // exchange energy
-                // TODO: don't have this as an instant transfer?
 //                Debug.LogFormat("Energy to be shared: creatureInNeed = {0}, creatureToGive = {1}", creatureInNeed, bestMatch);
-                creatureInNeed.CollectEnergy(energyNeeded);
                 bestMatch.ShareEnergy(energyNeeded);
+                creatureInNeed.CollectEnergy(Mathf.Max(energyNeeded - energyLoss, 0));
 //                Debug.LogFormat("Energy shared: energy exchanged = {0}, creatureInNeed = {1}, creatureToGive = {2}", energyNeeded, creatureInNeed, bestMatch);
-
             } else {
 //                Debug.LogFormat("No creature would to share energy with: {0}", creatureInNeed);
             }
+        }
+
+        /// Calculate energy loss during energy sharing based on the distance between both creatures.
+        /// Also take into account the speed and energy drain of both creatures
+        private float EnergySharingLoss(Creature creature1, Creature creature2) {
+            return (creature1.Speed + creature2.Speed) / Vector3.Distance(creature1.transform.position, creature2.transform.position) * (creature1.EnergyDepletionRate + creature2.EnergyDepletionRate);
         }
 
 #endregion

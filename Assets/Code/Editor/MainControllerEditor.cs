@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEditor;
+using SurvivalOfTheAlturist.Environment;
+using SurvivalOfTheAlturist.Creatures;
 
 namespace SurvivalOfTheAlturist {
 
@@ -20,6 +22,13 @@ namespace SurvivalOfTheAlturist {
 
             if (SimulationReport.IsSimulationRunning) {
                 EditorGUILayout.LabelField("Simulation time", SimulationReport.GetCurrentSimulation().CurrentTime + "");
+
+                float generationRate = controller.EnvironmentController.CurrentEnergyGenerationRate;
+                float depletionRate = controller.CreatureController.EnergyDepletionRateSum;
+
+                EditorGUILayout.LabelField("Energy generation rate", generationRate + "");
+                EditorGUILayout.LabelField("Energy depletion rate", depletionRate + "");
+                EditorGUILayout.LabelField("Energy flow rate", (generationRate - depletionRate) + "");
             } else {
                 EditorGUILayout.LabelField("Simulation not running!", styleBold);
             }
@@ -28,6 +37,7 @@ namespace SurvivalOfTheAlturist {
         public override bool RequiresConstantRepaint() {
             return true;
         }
+
     }
 }
 

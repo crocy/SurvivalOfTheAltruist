@@ -145,6 +145,8 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         public float EndTime { get { return endTime; } }
 
+        public float EnergyDepletionRate { get { return energyDepletionRate; } }
+
 #endregion
 
 #region Unity override

@@ -44,6 +44,8 @@ namespace SurvivalOfTheAlturist {
 
         public CreatureController CreatureController { get { return creatureController; } }
 
+        public EnvironmentController EnvironmentController { get { return environmentController; } }
+
         public float TimeScale {
             get {
                 return Time.timeScale;
