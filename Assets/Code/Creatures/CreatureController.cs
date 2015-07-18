@@ -13,7 +13,7 @@ namespace SurvivalOfTheAlturist.Creatures {
         public const float MinTresholdDistance = 0.01f;
 
         private readonly List<Creature> creatures = new List<Creature>();
-        private readonly Dictionary<int, List<Creature>> groupIdToCreatures = new Dictionary<int, List<Creature>>();
+        private readonly Dictionary<Group, List<Creature>> groupToCreatures = new Dictionary<Group, List<Creature>>();
 
         private Action onAllCreaturesDied;
 
@@ -146,20 +146,20 @@ namespace SurvivalOfTheAlturist.Creatures {
             RemoveAllCreatures();
 
             Creature creature;
+            Group group = new Group();
 
             for (int i = 0; i < generateCreatures; i++) {
-                creature = GenerateCreature(0);
+                creature = GenerateCreature(group);
                 creature.name = "Creature (" + i + ")";
             }
         }
 
-        public Creature GenerateCreature(int groupID) {
+        public Creature GenerateCreature(Group group) {
             Creature creature;
             List<Creature> list;
 
             creature = UnityEngine.Object.Instantiate(creaturePrefab);
-            creature.GroupID = groupID;
-            creature.InitToRandomValues(energyLevelLow, energyLevelCritical);
+            creature.InitToRandomValues(group, energyLevelLow, energyLevelCritical);
             creature.transform.position = mainContoller.GetRandomWorldPosition(); // start position
             creature.MoveTo = mainContoller.GetRandomWorldPosition(); // random go to position
 
@@ -170,9 +170,9 @@ namespace SurvivalOfTheAlturist.Creatures {
 
             creatures.Add(creature);
 
-            if (!groupIdToCreatures.TryGetValue(creature.GroupID, out list)) {
+            if (!groupToCreatures.TryGetValue(creature.Group, out list)) {
                 list = new List<Creature>();
-                groupIdToCreatures.Add(creature.GroupID, list);
+                groupToCreatures.Add(creature.Group, list);
             }
             list.Add(creature);
 
@@ -244,7 +244,7 @@ namespace SurvivalOfTheAlturist.Creatures {
         private float WouldShareEnergy(Creature creatureInNeed, Creature creatureToGive) {
             // check if creatures from different groups share energy
             // TODO: should expand this
-            if (creatureToGive.GroupID != creatureInNeed.GroupID) {
+            if (creatureToGive.Group != creatureInNeed.Group) {
                 return -1;
             }
 
@@ -279,8 +279,8 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         private void NeedEnergy(Creature creatureInNeed) {
             List<Creature> list;
-            if (!groupIdToCreatures.TryGetValue(creatureInNeed.GroupID, out list)) {
-                throw new Exception("No group found with ID = " + creatureInNeed.GroupID);
+            if (!groupToCreatures.TryGetValue(creatureInNeed.Group, out list)) {
+                throw new Exception("No group found with ID = " + creatureInNeed.Group);
             }
 
             float energyOffered;

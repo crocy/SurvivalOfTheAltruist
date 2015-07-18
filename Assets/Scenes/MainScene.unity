@@ -257,6 +257,7 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: .0219999999
+  m_StereoMirrorMode: 0
 --- !u!4 &652023802
 Transform:
   m_ObjectHideFlags: 0
@@ -322,6 +323,10 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 11418126, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}
+      propertyPath: groups.Array.size
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 411382, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -359,13 +364,15 @@ Prefab:
       value: 
       objectReference: {fileID: 2082805314}
     - target: {fileID: 11418126, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}
-      propertyPath: altruismMin
-      value: 0
-      objectReference: {fileID: 0}
+      propertyPath: groups.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 8b0cfe90635188a449a472a463025785,
+        type: 2}
     - target: {fileID: 11418126, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}
-      propertyPath: altruismMax
-      value: 1
-      objectReference: {fileID: 0}
+      propertyPath: groups.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: c8d4d999a286c074aae0a974423ed43d,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}
   m_IsPrefabParent: 0

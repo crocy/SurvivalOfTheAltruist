@@ -48,6 +48,7 @@ namespace SurvivalOfTheAlturist.Creatures {
         private float energyLevelCritical;
 
         private float speed;
+        private Group group = null;
 
 #endregion
 
@@ -64,8 +65,6 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         [Header("Base attributes")]
 
-        [SerializeField]
-        private int groupID = 0;
         [SerializeField]
         [Range(0, EnergyMax)]
         private float energy = 1f;
@@ -131,11 +130,6 @@ namespace SurvivalOfTheAlturist.Creatures {
             }
         }
 
-        public int GroupID { 
-            get { return groupID; }
-            set { groupID = value; }
-        }
-
         public float Energy {
             get { return energy; }
 //            set { energy = value; }
@@ -148,6 +142,8 @@ namespace SurvivalOfTheAlturist.Creatures {
                 energyDepletionRate = SpeedToEnergyDepletionRatio * speed;
             }
         }
+
+        public Group Group { get { return group; } }
 
         public float Altruism { 
             get { return altruism; }
@@ -258,11 +254,12 @@ namespace SurvivalOfTheAlturist.Creatures {
 #endregion
 
         public override string ToString() {
-            return string.Format("[{0}: State = {1}, Energy = {2}, Altruism = {3:0.000}, SpeedBase = {4:0.00}]", 
+            return string.Format("[{0}: State = {1}, Energy = {2:0.000}, Altruism = {3:0.000}, SpeedBase = {4:0.00}]", 
                 name, state, Energy, Altruism, speedBase);
         }
 
-        public void InitToRandomValues(float energyLevelLow, float energyLevelCritical) {
+        public void InitToRandomValues(Group group, float energyLevelLow, float energyLevelCritical) {
+            this.group = group;
             this.energyLevelLow = energyLevelLow;
             this.energyLevelCritical = energyLevelCritical;
 
@@ -270,6 +267,8 @@ namespace SurvivalOfTheAlturist.Creatures {
             energy = UnityEngine.Random.Range(EnergyStartMin, EnergyStartMax);
             speedBase = UnityEngine.Random.Range(SpeedStartMin, SpeedStartMax);
             Speed = speedBase; // to update energy drain value
+
+            sprite.color = group.GroupColor;
         }
 
         /// <summary>
