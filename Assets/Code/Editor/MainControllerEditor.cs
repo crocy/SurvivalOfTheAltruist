@@ -28,14 +28,14 @@ namespace SurvivalOfTheAlturist {
 
                 EditorGUILayout.LabelField("Energy generation rate", generationRate + "");
                 EditorGUILayout.LabelField("Energy depletion rate", depletionRate + "");
-                EditorGUILayout.LabelField("Energy flow rate", (generationRate - depletionRate) + "");
+                EditorGUILayout.LabelField("Energy net flow rate", (generationRate - depletionRate) + "");
             } else {
                 EditorGUILayout.LabelField("Simulation not running!", styleBold);
             }
         }
 
         public override bool RequiresConstantRepaint() {
-            return true;
+            return SimulationReport.IsSimulationRunning;
         }
 
     }

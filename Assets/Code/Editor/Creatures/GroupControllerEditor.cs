@@ -12,7 +12,7 @@ namespace SurvivalOfTheAlturist.Creatures {
         public override void OnInspectorGUI() {
             base.OnInspectorGUI();
 
-            GroupController controller = target as GroupController;
+//            GroupController controller = target as GroupController;
             GUIStyle styleBold = GUI.skin.label;
             styleBold.fontStyle = FontStyle.Bold;
 

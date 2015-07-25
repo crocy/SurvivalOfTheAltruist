@@ -21,13 +21,12 @@ namespace SurvivalOfTheAlturist {
 
 #endregion
 
-        public static Simulation StartSimulationReport() {
+        public static Simulation StartSimulationReport(MainController mainController) {
             if (currentSimulation != null) {
                 throw new Exception("A simulation report is already in progress!");
             }
 
-            currentSimulation = new Simulation();
-            currentSimulation.startTime = Time.time;
+            currentSimulation = new Simulation(mainController, Time.time);
             return currentSimulation;
         }
 
@@ -36,7 +35,7 @@ namespace SurvivalOfTheAlturist {
                 throw new Exception("No simulation started yet!");
             }
 
-            currentSimulation.endTime = Time.time;
+            currentSimulation.EndTime = Time.time;
 
             Simulation simulation = currentSimulation;
             currentSimulation = null;
@@ -61,7 +60,8 @@ namespace SurvivalOfTheAlturist {
         }
 
         public static void SaveToFile(Simulation simulation) {
-            string path = PathToReports + "/" + string.Format(ReportsFileName, simulation.Date).Replace(":", ".") + ".txt";
+//            string path = PathToReports + "/" + string.Format(ReportsFileName, simulation.Date).Replace(":", ".") + ".txt";
+            string path = PathToReports + "/" + string.Format(ReportsFileName, simulation.Date).Replace(":", ".") + " - G[" + simulation.groups.Count + "].txt";
             string report = simulation.GetReport();
 
             using (var fileStream = File.CreateText(path)) {

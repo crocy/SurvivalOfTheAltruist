@@ -42,6 +42,8 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         public MainController MainContoller { get { return mainContoller; } }
 
+        public int NumOfGroups { get { return groups.Count; } }
+
 #endregion
 
 #region Unity override

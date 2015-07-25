@@ -6,7 +6,7 @@ using System;
 
 namespace SurvivalOfTheAlturist.Creatures {
 
-    public class CreatureController : MonoBehaviour, IController {
+    public class CreatureController : MonoBehaviour, IController, IReport {
 
 #region Class fields
 
@@ -20,6 +20,8 @@ namespace SurvivalOfTheAlturist.Creatures {
 #endregion
 
 #region Serialized fields
+
+        [Header("Links")]
 
         [SerializeField]
         private MainController mainContoller = null;
@@ -44,6 +46,8 @@ namespace SurvivalOfTheAlturist.Creatures {
         [SerializeField]
         [Range(0, 1)]
         private float energyLevelCritical = 0.1f;
+        [SerializeField]
+        private bool takeAllOfferedEnergy = false;
 
 #endregion
 
@@ -66,6 +70,8 @@ namespace SurvivalOfTheAlturist.Creatures {
             }
         }
 
+        public bool TakeAllOfferedEnergy { get { return takeAllOfferedEnergy; } }
+
 #endregion
 
 #region Unity override
@@ -87,6 +93,14 @@ namespace SurvivalOfTheAlturist.Creatures {
             //            GenerateCreatures();
             RemoveAllCreatures();
             gameObject.SetActive(true);
+        }
+
+#endregion
+
+#region IReport implementation
+
+        public string GetReport() {
+            return string.Format("Creature controller: num of creatures = {0}, TakeAllOfferedEnergy = {1}", Creatures.Count, takeAllOfferedEnergy);
         }
 
 #endregion
@@ -142,18 +156,6 @@ namespace SurvivalOfTheAlturist.Creatures {
 
 #region Generate/update/remove logic
 
-        private void GenerateCreatures() {
-            RemoveAllCreatures();
-
-            Creature creature;
-            Group group = new Group();
-
-            for (int i = 0; i < generateCreatures; i++) {
-                creature = GenerateCreature(group);
-                creature.name = "Creature (" + i + ")";
-            }
-        }
-
         public Creature GenerateCreature(Group group) {
             Creature creature;
             List<Creature> list;
@@ -187,8 +189,7 @@ namespace SurvivalOfTheAlturist.Creatures {
         }
 
         public bool RemoveCreature(Creature creature) {
-            Debug.LogWarningFormat("Removing creature: {0}", creature);
-//            UnityEngine.Object.Destroy(creature.gameObject);
+//            Debug.LogFormat("Removing creature: {0}", creature);
             creature.transform.parent = transform;
             creature.gameObject.SetActive(false);
             return creatures.Remove(creature);
@@ -303,8 +304,12 @@ namespace SurvivalOfTheAlturist.Creatures {
 
             if (bestMatch != null) {
                 // check how much of the offered energy would creatureInNeed take
-                float energyNeeded = EnergyNeededAmount(creatureInNeed, bestEnergyOffered);
                 float energyLoss = EnergySharingLoss(creatureInNeed, bestMatch);
+                float energyNeeded = bestEnergyOffered;
+
+                if (!takeAllOfferedEnergy) {
+                    energyNeeded = EnergyNeededAmount(creatureInNeed, bestEnergyOffered);
+                }
 //                Debug.LogFormat("Energy to be shared: {0}, energyLoss = {1}", energyNeeded, energyLoss);
 
                 // exchange energy

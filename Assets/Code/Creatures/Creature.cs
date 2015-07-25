@@ -168,6 +168,10 @@ namespace SurvivalOfTheAlturist.Creatures {
             set { energyLevelCritical = value; }
         }
 
+        public float EnergyCollected { get { return energyCollected; } }
+
+        public float EnergyShared { get { return energyShared; } }
+
 #endregion
 
 #region Unity override
@@ -236,13 +240,15 @@ namespace SurvivalOfTheAlturist.Creatures {
         public string GetReport() {
             StringBuilder builder = new StringBuilder();
 
+            float time;
             if (endTime > 0) {
-                builder.AppendFormat("{0}, lifetime = {1:0.00}", ToString(), (endTime - startTime));
+                time = endTime - startTime;
             } else {
-                builder.AppendFormat("{0}, lifetime = {1:0.00}", ToString(), (Time.time - startTime));
+                time = Time.time - startTime;
             }
+            builder.AppendFormat("{0}, lifetime = {1:0.00}", ToString(), time);
 
-            if (startTime > 0) {
+            if (startTime > SimulationReport.GetCurrentSimulation().StartTime) {
                 builder.AppendFormat(" (start = {0}, end = {1})", startTime, endTime);
             }
 
@@ -254,8 +260,17 @@ namespace SurvivalOfTheAlturist.Creatures {
 #endregion
 
         public override string ToString() {
-            return string.Format("[{0}: State = {1}, Energy = {2:0.000}, Altruism = {3:0.000}, SpeedBase = {4:0.00}]", 
-                name, state, Energy, Altruism, speedBase);
+            //            return string.Format("[{0}: State = {1}, Energy = {2:0.000}, Altruism = {3:0.000}, SpeedBase = {4:0.00}]", 
+            //                name, state, Energy, Altruism, speedBase);
+            StringBuilder builder = new StringBuilder();
+
+            builder.AppendFormat("[{0}: Altruism = {1:0.000}, SpeedBase = {2:0.00}, State = {3}", name, Altruism, speedBase, state);
+            if (state != CreatureState.Dead) {
+                builder.AppendFormat(", Energy = {0:0.000}", Energy);
+            }
+            builder.AppendFormat("]");
+
+            return builder.ToString();
         }
 
         public void InitToRandomValues(Group group, float energyLevelLow, float energyLevelCritical) {

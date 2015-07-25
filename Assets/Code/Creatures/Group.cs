@@ -75,6 +75,26 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         public int CreaturesCount { get { return creatures.Count; } }
 
+        public float EnergyCollectedSum {
+            get {
+                float energyCollectedSum = 0;
+                foreach (var creature in creatures) {
+                    energyCollectedSum += creature.EnergyCollected;
+                }
+                return energyCollectedSum;
+            }
+        }
+
+        public float EnergySharedSum {
+            get {
+                float energySharedSum = 0;
+                foreach (var creature in creatures) {
+                    energySharedSum += creature.EnergyShared;
+                }
+                return energySharedSum;
+            }
+        }
+
 #endregion
 
 #region Indexers
@@ -104,9 +124,12 @@ namespace SurvivalOfTheAlturist.Creatures {
             });
 
             builder.AppendFormat("{0}\n", ToString());
+            builder.AppendFormat("  (Energy sum: collected = {0}, shared = {1})\n", EnergyCollectedSum, EnergySharedSum);
+            builder.Append("-------------------------------------------------------------------------------\n");
             foreach (var item in creatures) {
                 builder.AppendFormat("  {0}\n", item.GetReport());
             }
+            builder.Append("-------------------------------------------------------------------------------\n");
 
             return builder.ToString();
         }
@@ -127,7 +150,7 @@ namespace SurvivalOfTheAlturist.Creatures {
             for (int i = 0; i < genNumOfCreatures; i++) {
 //                creature = UnityEngine.Object.Instantiate(creaturePrefab);
                 creature = creatureController.GenerateCreature(this);
-                creature.name = "Creature (" + i + ")";
+                creature.name = string.Format("Creature ({0:00})", i);
                 creature.Altruism = UnityEngine.Random.Range(altruismMin, altruismMax);
                 creature.CollectEnergy(UnityEngine.Random.Range(energyStartMin, energyStartMax));
 

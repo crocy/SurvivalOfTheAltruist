@@ -16,12 +16,10 @@ namespace SurvivalOfTheAlturist {
         private readonly int id = UnityEngine.Random.Range(0, int.MaxValue);
         private readonly string date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         private readonly int randomSeed = UnityEngine.Random.seed;
+        private readonly MainController mainController;
+        private readonly float startTime;
 
-        public float startTime;
-        public float endTime;
-
-        public int numOfAllEnergy;
-        public float sumOfAllEnergy;
+        private float endTime;
 
 #endregion
 
@@ -44,7 +42,19 @@ namespace SurvivalOfTheAlturist {
             }
         }
 
+        public float StartTime { get { return startTime; } }
+
+        public float EndTime { 
+            get { return endTime; }
+            set { endTime = value; }
+        }
+
 #endregion
+
+        public Simulation(MainController mainController, float startTime) {
+            this.mainController = mainController;
+            this.startTime = startTime;
+        }
 
 #region IReport implementation
 
@@ -55,17 +65,13 @@ namespace SurvivalOfTheAlturist {
                 builder.AppendFormat(" (start = {0}, end = {1})", startTime, endTime);
             }
             builder.AppendFormat("\n\n");
-            builder.AppendFormat("Energy generated: num = {0}, sum = {1}\n\n", numOfAllEnergy, sumOfAllEnergy);
+            builder.Append(mainController.EnvironmentController.GetReport() + "\n\n");
+            builder.Append(mainController.CreatureController.GetReport() + "\n\n");
 
             builder.AppendFormat("Groups: num = {0}\n\n", groups.Count);
             foreach (var item in groups) {
                 builder.AppendFormat("{0}\n\n", item.GetReport());
             }
-
-//            builder.AppendFormat("Creatures: num = {0}\n", creatures.Count);
-//            foreach (var item in creatures) {
-//                builder.AppendFormat("{0}\n", item.GetReport());
-//            }
 
             return builder.ToString();
         }

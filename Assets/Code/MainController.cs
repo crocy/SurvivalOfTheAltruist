@@ -46,6 +46,8 @@ namespace SurvivalOfTheAlturist {
 
         public EnvironmentController EnvironmentController { get { return environmentController; } }
 
+        public GroupController GroupController { get { return groupController; } }
+
         public float TimeScale {
             get {
                 return Time.timeScale;
@@ -118,7 +120,11 @@ namespace SurvivalOfTheAlturist {
                 Debug.LogWarning("Simulation timed out");
                 StopSimulation();
             }
-            SimulationReport.StartSimulationReport();
+            SimulationReport.StartSimulationReport(this);
+
+            Debug.Log("Smulation started.");
+            Debug.Log("Press 'Space' to pause the current simulation, '+' or '-' to speed up or slow down the simulation.");
+            Debug.Log("Press 'S' to see current report, 'O' to save current report, 'R' or 'P' to restart the simulation.");
 
             environmentController.Reset();
             creatureController.Reset(); // removes all creatures - must be called before "groupController.Reset()"
@@ -192,13 +198,16 @@ namespace SurvivalOfTheAlturist {
 
         private void StopSimulation() {
             if (SimulationReport.IsSimulationRunning) {
-                SimulationReport.SaveToFile(SimulationReport.StopSimulationReport());
+                SimulationReport.SaveToFile(SimulationReport.GetCurrentSimulation());
+                SimulationReport.StopSimulationReport();
                 Debug.Log("Smulation ended. Press 'R' or 'P' to restart the simulation.");
             }
 
             environmentController.gameObject.SetActive(false);
             creatureController.gameObject.SetActive(false);
             groupController.gameObject.SetActive(false);
+
+            Debug.Break();
         }
     }
 

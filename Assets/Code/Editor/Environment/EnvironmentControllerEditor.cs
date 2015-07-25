@@ -26,7 +26,7 @@ namespace SurvivalOfTheAlturist.Environment {
         }
 
         public override bool RequiresConstantRepaint() {
-            return true;
+            return SimulationReport.IsSimulationRunning;
         }
     }
 }

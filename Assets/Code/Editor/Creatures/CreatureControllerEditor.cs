@@ -32,7 +32,7 @@ namespace SurvivalOfTheAlturist.Creatures {
         }
 
         public override bool RequiresConstantRepaint() {
-            return true;
+            return SimulationReport.IsSimulationRunning;
         }
     }
 }
