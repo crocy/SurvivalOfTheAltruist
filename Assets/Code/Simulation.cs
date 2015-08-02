@@ -64,9 +64,11 @@ namespace SurvivalOfTheAlturist {
             if (startTime > 0) {
                 builder.AppendFormat(" (start = {0}, end = {1})", startTime, endTime);
             }
-            builder.AppendFormat("\n\n");
-            builder.Append(mainController.EnvironmentController.GetReport() + "\n\n");
-            builder.Append(mainController.CreatureController.GetReport() + "\n\n");
+            builder.AppendLine("\n\n#################################################################");
+            builder.AppendLine(mainController.EnvironmentController.GetReport());
+            builder.AppendLine();
+            builder.AppendLine(mainController.CreatureController.GetReport());
+            builder.AppendLine("#################################################################\n");
 
             builder.AppendFormat("Groups: num = {0}\n\n", groups.Count);
             foreach (var item in groups) {
@@ -77,6 +79,16 @@ namespace SurvivalOfTheAlturist {
         }
 
 #endregion
+
+        public string GetGroupsTags() {
+            StringBuilder builder = new StringBuilder();
+            foreach (var group in groups) {
+                builder.AppendFormat("{0}, ", group.Tag);
+            }
+            builder.Length -= 2; // remove the last ", " part
+
+            return builder.ToString();
+        }
 
     }
 }

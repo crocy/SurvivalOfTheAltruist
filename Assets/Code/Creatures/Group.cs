@@ -18,6 +18,9 @@ namespace SurvivalOfTheAlturist.Creatures {
 #region Serialized fields
 
         [SerializeField]
+        private string tag;
+
+        [SerializeField]
         [Range(1, 100)]
         private int genNumOfCreatures = 10;
 
@@ -46,6 +49,12 @@ namespace SurvivalOfTheAlturist.Creatures {
 #region Properties
 
         public int GroupId { get { return groupId; } }
+
+        public string Tag {
+            get {
+                return string.Format("{0}[{1}]", tag, creatures.Count);
+            }
+        }
 
         public int GenNumOfCreatures { get { return genNumOfCreatures; } }
 
@@ -123,13 +132,21 @@ namespace SurvivalOfTheAlturist.Creatures {
                 return (int)Mathf.Sign(y.EndTime - x.EndTime);
             });
 
+            int alive = 0;
+            foreach (var creature in creatures) {
+                if (creature.State != CreatureState.Dead) {
+                    alive++;
+                }
+            }
+
             builder.AppendFormat("{0}\n", ToString());
+            builder.AppendFormat("  (Creatures: alive = {0}, dead = {1})\n", alive, creatures.Count - alive);
             builder.AppendFormat("  (Energy sum: collected = {0}, shared = {1})\n", EnergyCollectedSum, EnergySharedSum);
-            builder.Append("-------------------------------------------------------------------------------\n");
+            builder.AppendLine("-------------------------------------------------------------------------------");
             foreach (var item in creatures) {
                 builder.AppendFormat("  {0}\n", item.GetReport());
             }
-            builder.Append("-------------------------------------------------------------------------------\n");
+            builder.AppendLine("-------------------------------------------------------------------------------");
 
             return builder.ToString();
         }
@@ -137,8 +154,8 @@ namespace SurvivalOfTheAlturist.Creatures {
 #endregion
 
         public override string ToString() {
-            return string.Format("[Group: \"{0}\", GroupId = {1}, AltruismMin = {2:0.000}, AltruismMax = {3:0.000}, EnergyStartMin = {4:0.000}, EnergyStartMax = {5:0.000}, CreaturesCount = {6}]",
-                name, GroupId, AltruismMin, AltruismMax, EnergyStartMin, EnergyStartMax, CreaturesCount);
+            return string.Format("[Group: \"{0}\", Tag = {1}, GroupId = {2}, AltruismMin = {3:0.000}, AltruismMax = {4:0.000}, EnergyStartMin = {5:0.000}, EnergyStartMax = {6:0.000}, CreaturesCount = {7}]",
+                name, Tag, GroupId, AltruismMin, AltruismMax, EnergyStartMin, EnergyStartMax, CreaturesCount);
         }
 
         public void InitGroup(CreatureController creatureController) {

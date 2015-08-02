@@ -4,6 +4,7 @@ using UnityEditor;
 
 namespace SurvivalOfTheAlturist.Creatures {
 
+    [CanEditMultipleObjects]
     [CustomEditor(typeof(Group))]
     public class GroupEditor : Editor {
 
@@ -19,5 +20,6 @@ namespace SurvivalOfTheAlturist.Creatures {
         }
 
     }
+
 }
 

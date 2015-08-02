@@ -1,9 +1,10 @@
 ﻿using System;
 using UnityEngine;
+using System.Text;
 
 namespace SurvivalOfTheAlturist.Environment {
 
-    public class EnergyGenerator : ScriptableObject {
+    public class EnergyGenerator : ScriptableObject, IReport {
 
 #region Class enum
 
@@ -19,6 +20,9 @@ namespace SurvivalOfTheAlturist.Environment {
 #endregion
 
 #region Serialized fields
+
+        [SerializeField]
+        private string tag;
 
         [SerializeField]
         private EnergyGeneratorType type = default(EnergyGeneratorType);
@@ -41,9 +45,24 @@ namespace SurvivalOfTheAlturist.Environment {
 
 #region Properties
 
+        public string Tag { get { return string.Format("EG[{0}]", tag); } }
+
         public EnergyGeneratorType Type { get { return type; } }
 
         public int StartEnergy { get { return startEnergy; } }
+
+#endregion
+
+#region IReport implementation
+
+        public string GetReport() {
+            StringBuilder builder = new StringBuilder();
+            builder.AppendFormat("[Energy generator: '{0}', type = {1}, startEnergy = {2}, disableGeneratorWhenNetFlowNegative = {3}]", 
+                name, type, startEnergy, disableGeneratorWhenNetFlowNegative);
+//            builder.AppendFormat("\n  Generator curve: {0}", generationCurve);
+
+            return builder.ToString();
+        }
 
 #endregion
 

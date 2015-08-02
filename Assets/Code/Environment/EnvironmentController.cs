@@ -94,7 +94,8 @@ namespace SurvivalOfTheAlturist.Environment {
 #region IReport implementation
 
         public string GetReport() {
-            return string.Format("Environment controller: numOfAllGeneratedEnergy = {0}, sumOfAllGeneratedEnergy = {1}", numOfAllGeneratedEnergy, sumOfAllGeneratedEnergy);
+            return string.Format("Environment controller: numOfAllGeneratedEnergy = {0}, sumOfAllGeneratedEnergy = {1},\n  generator = {2}", 
+                numOfAllGeneratedEnergy, sumOfAllGeneratedEnergy, energyGenerator.GetReport());
         }
 
 #endregion
