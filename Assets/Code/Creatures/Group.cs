@@ -133,14 +133,24 @@ namespace SurvivalOfTheAlturist.Creatures {
             });
 
             int alive = 0;
-            foreach (var creature in creatures) {
-                if (creature.State != CreatureState.Dead) {
+            float lifetimeTotal = 0;
+            float[] lifetimes = new float[creatures.Count];
+
+            for (int i = 0; i < creatures.Count; i++) {
+                lifetimes[i] = creatures[i].GetLifetime();
+                lifetimeTotal += lifetimes[i];
+
+                if (creatures[i].State != CreatureState.Dead) {
                     alive++;
                 }
             }
 
+            Array.Sort(lifetimes);
+            float lifetimeMedian = lifetimes[lifetimes.Length / 2];
+
             builder.AppendFormat("{0}\n", ToString());
-            builder.AppendFormat("  (Creatures: alive = {0}, dead = {1})\n", alive, creatures.Count - alive);
+            builder.AppendFormat("  (Creatures: alive = {0}, dead = {1}, lifetime: average = {2}, median = {3})\n",
+                alive, creatures.Count - alive, lifetimeTotal / creatures.Count, lifetimeMedian);
             builder.AppendFormat("  (Energy sum: collected = {0}, shared = {1})\n", EnergyCollectedSum, EnergySharedSum);
             builder.AppendLine("-------------------------------------------------------------------------------");
             foreach (var item in creatures) {

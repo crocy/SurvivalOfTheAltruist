@@ -42,6 +42,7 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         private float startTime, endTime;
         private float energyCollected;
+        private float energyReceived;
         private float energyShared;
         private float energyLevelLow;
         private float energyLevelCritical;
@@ -169,6 +170,8 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         public float EnergyCollected { get { return energyCollected; } }
 
+        public float EnergyReceived { get { return energyReceived; } }
+
         public float EnergyShared { get { return energyShared; } }
 
 #endregion
@@ -239,19 +242,13 @@ namespace SurvivalOfTheAlturist.Creatures {
         public string GetReport() {
             StringBuilder builder = new StringBuilder();
 
-            float time;
-            if (endTime > 0) {
-                time = endTime - startTime;
-            } else {
-                time = Time.time - startTime;
-            }
-            builder.AppendFormat("{0}, lifetime = {1:0.00}", ToString(), time);
+            builder.AppendFormat("{0}, {1}", ToString(), GetLifetimeString());
 
             if (startTime > SimulationReport.GetCurrentSimulation().StartTime) {
                 builder.AppendFormat(" (start = {0}, end = {1})", startTime, endTime);
             }
 
-            builder.AppendFormat(", energy: collected = {0:0.000}, shared = {1:0.000}", energyCollected, energyShared);
+            builder.AppendFormat(", energy: collected = {0:0.000}, received = {1:0.000}, shared = {2:0.000}", energyCollected, energyReceived, energyShared);
 
             return builder.ToString();
         }
@@ -343,10 +340,28 @@ namespace SurvivalOfTheAlturist.Creatures {
             energyCollected += energy;
         }
 
+        public void ReceiveEnergy(float energy) {
+            this.energy += energy;
+            energyReceived += energy;
+        }
+
         public void ShareEnergy(float energy) {
             this.energy -= energy;
             energyShared += energy;
         }
 
+        public float GetLifetime() {
+            float lifetime;
+            if (endTime > 0) {
+                lifetime = endTime - startTime;
+            } else {
+                lifetime = Time.time - startTime;
+            }
+            return lifetime;
+        }
+
+        public string GetLifetimeString() {
+            return string.Format("lifetime = {0:0.00}", GetLifetime());
+        }
     }
 }

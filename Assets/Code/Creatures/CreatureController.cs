@@ -317,7 +317,7 @@ namespace SurvivalOfTheAlturist.Creatures {
                 // exchange energy
 //                Debug.LogFormat("Energy to be shared: creatureInNeed = {0}, creatureToGive = {1}", creatureInNeed, bestMatch);
                 bestMatch.ShareEnergy(energyNeeded);
-                creatureInNeed.CollectEnergy(Mathf.Max(energyNeeded - energyLoss, 0));
+                creatureInNeed.ReceiveEnergy(Mathf.Max(energyNeeded - energyLoss, 0));
 //                Debug.LogFormat("Energy shared: energy exchanged = {0}, creatureInNeed = {1}, creatureToGive = {2}", energyNeeded, creatureInNeed, bestMatch);
             } else {
 //                Debug.LogFormat("No creature would to share energy with: {0}", creatureInNeed);
