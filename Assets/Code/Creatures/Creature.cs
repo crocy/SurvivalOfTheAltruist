@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System;
 using SurvivalOfTheAlturist.Environment;
 using System.Text;
@@ -67,7 +66,7 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         [SerializeField]
         [Range(0, EnergyMax)]
-        private float energy = 1f;
+        private float energy = -1f;
         /// Energy depletion rate per second.
         [SerializeField]
         [Range(0, EnergyMax)]
@@ -84,7 +83,7 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         [SerializeField]
         [Range(0, AltruismMax)]
-        private float altruism = 1f;
+        private float altruism = -1f;
 
 #endregion
 
@@ -278,8 +277,8 @@ namespace SurvivalOfTheAlturist.Creatures {
             this.energyLevelLow = energyLevelLow;
             this.energyLevelCritical = energyLevelCritical;
 
-            altruism = UnityEngine.Random.Range(AltruismMin, AltruismMax);
-            energy = UnityEngine.Random.Range(EnergyStartMin, EnergyStartMax);
+//            altruism = UnityEngine.Random.Range(AltruismMin, AltruismMax);
+//            energy = UnityEngine.Random.Range(EnergyStartMin, EnergyStartMax);
             speedBase = UnityEngine.Random.Range(SpeedStartMin, SpeedStartMax);
             Speed = speedBase; // to update energy drain value
 
