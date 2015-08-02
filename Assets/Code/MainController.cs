@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using SurvivalOfTheAlturist.Creatures;
 using SurvivalOfTheAlturist.Environment;
+using System.Collections.Generic;
 
 namespace SurvivalOfTheAlturist {
 
-    public class MainController : MonoBehaviour, IController {
+    public class MainController : MonoBehaviour, IController, IReport {
 
 #region Class fields
 
@@ -12,6 +13,7 @@ namespace SurvivalOfTheAlturist {
         private const float MaxTimeScale = 20f;
 
         private float prePauseTimeScale;
+        private int simulationsRan = 0;
 
 #endregion
 
@@ -32,9 +34,15 @@ namespace SurvivalOfTheAlturist {
         [Header("Properties")]
 
         [SerializeField]
+        private bool runInBackground = false;
+        [SerializeField]
         private int randomSeedOverride = 0;
         [SerializeField]
         private int simulationMaxTime = 600;
+        [SerializeField]
+        private int numOfSimulationsToRun = 1;
+        [SerializeField]
+        private List<EnergyGenerator> generatorsForSimulationBatches = null;
 
 #endregion
 
@@ -133,8 +141,23 @@ namespace SurvivalOfTheAlturist {
 
 #endregion
 
+#region IReport implementation
+
+        public string GetReport() {
+            return string.Format("Main controller: World bounds: width = {0}, height = {1}", worldBounds.extents.x, worldBounds.extents.y);
+        }
+
+#endregion
+
         public void Init() {
             creatureController.OnAllCreaturesDied = this.OnAllCreaturesDied;
+            simulationsRan = 1;
+            Application.runInBackground = runInBackground;
+
+            if (generatorsForSimulationBatches != null && generatorsForSimulationBatches.Count > 0) {
+                environmentController.EnergyGenerator = generatorsForSimulationBatches[0];
+                generatorsForSimulationBatches.RemoveAt(0);
+            }
         }
 
         public Vector3 GetRandomWorldPosition() {
@@ -207,7 +230,20 @@ namespace SurvivalOfTheAlturist {
             creatureController.gameObject.SetActive(false);
             groupController.gameObject.SetActive(false);
 
-            Debug.Break();
+            if (numOfSimulationsToRun <= simulationsRan) {
+                // if a list of generators is set, use each one once for every simulation batch (as defined by 'numOfSimulationsToRun') run
+                if (generatorsForSimulationBatches != null && generatorsForSimulationBatches.Count > 0) {
+                    simulationsRan = 1;
+                    Reset();
+                    environmentController.EnergyGenerator = generatorsForSimulationBatches[0];
+                    generatorsForSimulationBatches.RemoveAt(0);
+                } else {
+                    Debug.Break();
+                }
+            } else {
+                simulationsRan++;
+                Reset();
+            }
         }
     }
 

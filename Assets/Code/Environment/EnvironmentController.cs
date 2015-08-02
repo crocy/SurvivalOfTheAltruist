@@ -59,6 +59,11 @@ namespace SurvivalOfTheAlturist.Environment {
 
         public float SumOfAllGeneratedEnergy { get { return sumOfAllGeneratedEnergy; } }
 
+        public EnergyGenerator EnergyGenerator { 
+            get { return energyGenerator; }
+            set { energyGenerator = value; }
+        }
+
 #endregion
 
 #region Unity override

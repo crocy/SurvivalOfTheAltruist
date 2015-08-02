@@ -61,10 +61,12 @@ namespace SurvivalOfTheAlturist {
         public string GetReport() {
             StringBuilder builder = new StringBuilder();
             builder.AppendFormat("Simulation: ID = {0}, date = {1}, duration = {2}, random seed = {3}", id, date, SimulationCurrentDuration, randomSeed);
-            if (startTime > 0) {
-                builder.AppendFormat(" (start = {0}, end = {1})", startTime, endTime);
-            }
+//            if (startTime > 0) {
+//                builder.AppendFormat(" (start = {0}, end = {1})", startTime, endTime);
+//            }
             builder.AppendLine("\n\n#################################################################");
+            builder.AppendLine(mainController.GetReport());
+            builder.AppendLine();
             builder.AppendLine(mainController.EnvironmentController.GetReport());
             builder.AppendLine();
             builder.AppendLine(mainController.CreatureController.GetReport());
@@ -90,6 +92,9 @@ namespace SurvivalOfTheAlturist {
             return builder.ToString();
         }
 
+        public string GetGeneratorTag() {
+            return mainController.EnvironmentController.EnergyGenerator.Tag;
+        }
     }
 }
 
