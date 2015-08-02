@@ -40,12 +40,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainContoller: {fileID: 0}
-  numOfGroups: 1
-  numOfCreaturesPerGroup: 10
-  altruismMin: 0
-  altruismMax: 1
-  energyStartMin: .300000012
-  energyStartMax: 1
+  groups:
+  - {fileID: 11400000, guid: bd287b557087cd14d99cfc58a82d7aa2, type: 2}
+  - {fileID: 11400000, guid: 633bebcaab8fa984ba4f74c83d1c1a82, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

@@ -11,6 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 794469288a7164546b844b463d8e2e39, type: 3}
   m_Name: EnergyGenerator - Scarcity
   m_EditorClassIdentifier: 
+  tag: S
   type: 1
   startEnergy: 10
   generationCurve:

@@ -41,12 +41,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   worldBounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 50, y: 50, z: 0}
+    m_Extent: {x: 100, y: 100, z: 0}
   creatureController: {fileID: 0}
   groupController: {fileID: 0}
   environmentController: {fileID: 0}
+  runInBackground: 1
   randomSeedOverride: 0
   simulationMaxTime: 200
+  numOfSimulationsToRun: 1
+  generatorsForSimulationBatches:
+  - {fileID: 11400000, guid: 2dfcfc732a4516c47859f43e326d7b02, type: 2}
+  - {fileID: 11400000, guid: c2164292bc3ad054888afd8c6cfff2c4, type: 2}
+  - {fileID: 11400000, guid: 1cfd964dfd0be704e9266c5b89dd85e9, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

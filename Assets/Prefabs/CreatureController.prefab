@@ -42,9 +42,10 @@ MonoBehaviour:
   mainContoller: {fileID: 0}
   curves: {fileID: 11405130, guid: d77f1e067f7a4fd45aa107b988c3ce90, type: 2}
   creaturePrefab: {fileID: 11470116, guid: 11d848f56841d8740a235bdd25315ff2, type: 2}
-  generateCreatures: 10
   energyLevelLow: .300000012
   energyLevelCritical: .100000001
+  takeAllOfferedEnergy: 0
+  shareEneryToLevelCritical: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

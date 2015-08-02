@@ -40,9 +40,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainContoller: {fileID: 0}
-  curves: {fileID: 11405130, guid: d77f1e067f7a4fd45aa107b988c3ce90, type: 2}
+  energyGenerator: {fileID: 11400000, guid: 2dfcfc732a4516c47859f43e326d7b02, type: 2}
   energyPrefab: {fileID: 11498696, guid: 612b2ef2178c43f42996cefcb80e0532, type: 2}
-  startEnergy: 10
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
