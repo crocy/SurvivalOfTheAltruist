@@ -33,11 +33,6 @@ namespace SurvivalOfTheAlturist.Creatures {
         [SerializeField]
         private Creature creaturePrefab = null;
 
-        [Header("Generation logic")]
-
-        [SerializeField]
-        private int generateCreatures = 10;
-
         [Header("Creature logic")]
 
         [SerializeField]
@@ -48,6 +43,8 @@ namespace SurvivalOfTheAlturist.Creatures {
         private float energyLevelCritical = 0.1f;
         [SerializeField]
         private bool takeAllOfferedEnergy = false;
+        [SerializeField]
+        private bool shareEneryToLevelCritical = false;
 
 #endregion
 
@@ -100,7 +97,8 @@ namespace SurvivalOfTheAlturist.Creatures {
 #region IReport implementation
 
         public string GetReport() {
-            return string.Format("Creature controller: num of creatures = {0}, TakeAllOfferedEnergy = {1}", Creatures.Count, takeAllOfferedEnergy);
+            return string.Format("Creature controller: num of creatures = {0}, takeAllOfferedEnergy = {1}, shareEneryToLevelCritical = {2}", 
+                Creatures.Count, takeAllOfferedEnergy, shareEneryToLevelCritical);
         }
 
 #endregion
@@ -250,7 +248,11 @@ namespace SurvivalOfTheAlturist.Creatures {
             }
 
             // don't share enery if below or at critical (this may change later)
-            if (creatureToGive.Energy <= energyLevelCritical) {
+            if (shareEneryToLevelCritical) {
+                if (creatureToGive.Energy <= energyLevelCritical) {
+                    return -1;
+                }
+            } else if (creatureToGive.Energy <= energyLevelLow) {
                 return -1;
             }
 
