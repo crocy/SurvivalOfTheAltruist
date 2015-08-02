@@ -9,13 +9,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 35c7e87ab97143640ba86470be5635f3, type: 3}
-  m_Name: AltruisticExtreme [10]
+  m_Name: Random [30]
   m_EditorClassIdentifier: 
-  tag: AX
-  genNumOfCreatures: 10
-  groupColor: {r: .787018239, g: 1, b: .497999996, a: 1}
-  altruismMin: 1
+  tag: R
+  genNumOfCreatures: 30
+  groupColor: {r: 1, g: 1, b: 0, a: 1}
+  altruismMin: 0
   altruismMax: 1
   energyStartMin: .300000012
   energyStartMax: 1
-  creatures: []
+  creatures:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

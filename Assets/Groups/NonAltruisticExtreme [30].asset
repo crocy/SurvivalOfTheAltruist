@@ -9,13 +9,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 35c7e87ab97143640ba86470be5635f3, type: 3}
-  m_Name: Altruistic [30]
+  m_Name: NonAltruisticExtreme [30]
   m_EditorClassIdentifier: 
-  tag: A
+  tag: NAX
   genNumOfCreatures: 30
-  groupColor: {r: 0, g: 1, b: 0, a: 1}
-  altruismMin: .75
-  altruismMax: 1
+  groupColor: {r: .498039216, g: 0, b: 0, a: 1}
+  altruismMin: 0
+  altruismMax: 0
   energyStartMin: 1
   energyStartMax: 1
   creatures:
