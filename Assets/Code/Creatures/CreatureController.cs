@@ -36,6 +36,9 @@ namespace SurvivalOfTheAlturist.Creatures {
         [Header("Creature logic")]
 
         [SerializeField]
+        [Range(0, 20)]
+        private float energyStorageCapacity = 2f;
+        [SerializeField]
         [Range(0, 1)]
         private float energyLevelLow = 0.3f;
         [SerializeField]
@@ -45,6 +48,12 @@ namespace SurvivalOfTheAlturist.Creatures {
         private bool takeAllOfferedEnergy = false;
         [SerializeField]
         private bool shareEneryToLevelCritical = false;
+        [SerializeField]
+        [Range(0, 1)]
+        private float shareExcessEnergyAltruismThreshold = 0.5f;
+        [SerializeField]
+        [Range(0, 1)]
+        private float dontShareLassThanXEnergy = 0.01f;
 
 #endregion
 
@@ -68,6 +77,10 @@ namespace SurvivalOfTheAlturist.Creatures {
         }
 
         public bool TakeAllOfferedEnergy { get { return takeAllOfferedEnergy; } }
+
+        public float EnergyStorageCapacity { get { return energyStorageCapacity; } }
+
+        public float DontShareLassThanXEnergy { get { return dontShareLassThanXEnergy; } }
 
 #endregion
 
@@ -97,8 +110,11 @@ namespace SurvivalOfTheAlturist.Creatures {
 #region IReport implementation
 
         public string GetReport() {
-            return string.Format("Creature controller: num of creatures = {0}, takeAllOfferedEnergy = {1}, shareEneryToLevelCritical = {2}", 
-                Creatures.Count, takeAllOfferedEnergy, shareEneryToLevelCritical);
+            return string.Format("Creature controller:" +
+            "\n - Creatures = {0}," +
+            "\n - Energy: storageCapacity = {1}, takeAllOffered = {2}, shareToLevelCritical = {3}, shareExcessEnergyAltruismThreshold = {4}, dontShareLassThanXEnergy = {5}", 
+                Creatures.Count,
+                energyStorageCapacity, takeAllOfferedEnergy, shareEneryToLevelCritical, shareExcessEnergyAltruismThreshold, dontShareLassThanXEnergy);
         }
 
 #endregion
@@ -132,6 +148,7 @@ namespace SurvivalOfTheAlturist.Creatures {
             creature.CollectEnergy(energy.EnergyAmount);
             mainContoller.RemoveEnvironmentObject(energy);
             creature.State = CreatureState.Foraging;
+            ShareExcessEnergyMaybe(creature);
         }
 
         private void OnEnergyLevelLow(Creature creatureInNeed) {
@@ -159,7 +176,7 @@ namespace SurvivalOfTheAlturist.Creatures {
             List<Creature> list;
 
             creature = UnityEngine.Object.Instantiate(creaturePrefab);
-            creature.InitToRandomValues(group, energyLevelLow, energyLevelCritical);
+            creature.InitToRandomValues(group, energyLevelLow, energyLevelCritical, energyStorageCapacity);
             creature.transform.position = mainContoller.GetRandomWorldPosition(); // start position
             creature.MoveTo = mainContoller.GetRandomWorldPosition(); // random go to position
 
@@ -210,14 +227,14 @@ namespace SurvivalOfTheAlturist.Creatures {
                 prevEnergy = creature.Energy;
                 currentEnergy = creature.UpdateEnergy();
 
-                if (creature.Energy <= 0) {
+                if (currentEnergy <= 0) {
                     OnEnergyDepleted(creature);
                     i--;
                     continue;
                 } else if (currentEnergy <= energyLevelCritical && prevEnergy > energyLevelCritical) {
                     // trigger only once, once the threshold has been reached
                     OnEnergyLevelCritical(creature);
-                } else if (creature.Energy <= energyLevelLow && prevEnergy > energyLevelLow) {
+                } else if (currentEnergy <= energyLevelLow && prevEnergy > energyLevelLow) {
                     // trigger only once, once the threshold has been reached
                     OnEnergyLevelLow(creature);
                 }
@@ -241,26 +258,30 @@ namespace SurvivalOfTheAlturist.Creatures {
         /// <param name="creatureInNeed">Creature in need.</param>
         /// <param name="creatureToGive">Creature to give.</param>
         private float WouldShareEnergy(Creature creatureInNeed, Creature creatureToGive) {
-            // check if creatures from different groups share energy
+            // check if creatures from different groups share energy (not for now)
             // TODO: should expand this
             if (creatureToGive.Group != creatureInNeed.Group) {
                 return -1;
             }
 
-            // don't share enery if below or at critical (this may change later)
+            // by default, don't share enery if at or below low level (this may change later)
+            float shareToEnergyLevel = energyLevelLow;
             if (shareEneryToLevelCritical) {
-                if (creatureToGive.Energy <= energyLevelCritical) {
-                    return -1;
-                }
-            } else if (creatureToGive.Energy <= energyLevelLow) {
-                return -1;
+                // don't share enery if at or below critical level (this may change later)
+                shareToEnergyLevel = energyLevelCritical;
             }
 
             // TODO: add a different curves for when creature above and below "low energy level"?
 
-            // never give so much energy that would push the creature below energy level critical
-            float energyAvailable = creatureToGive.Energy - energyLevelCritical;
-            return energyAvailable * curves.AltruismToEnergyGivePercent(creatureToGive.Altruism);
+            // never give so much energy that would push the creature below shareToEnergyLevel
+            float energyAvailable = (creatureToGive.Energy - shareToEnergyLevel) * curves.AltruismToEnergyGivePercent(creatureToGive.Altruism);
+
+            // don't share energy if all of it would be lost in transaction penalties
+            if (energyAvailable <= dontShareLassThanXEnergy + creatureToGive.EnergySharingLoss(creatureInNeed)) {
+                return 0;
+            }
+
+            return energyAvailable;
         }
 
         private float EnergyNeededAmount(Creature creatureInNeed, float energyOffered) {
@@ -306,7 +327,6 @@ namespace SurvivalOfTheAlturist.Creatures {
 
             if (bestMatch != null) {
                 // check how much of the offered energy would creatureInNeed take
-                float energyLoss = EnergySharingLoss(creatureInNeed, bestMatch);
                 float energyNeeded = bestEnergyOffered;
 
                 if (!takeAllOfferedEnergy) {
@@ -316,18 +336,44 @@ namespace SurvivalOfTheAlturist.Creatures {
 
                 // exchange energy
 //                Debug.LogFormat("Energy to be shared: creatureInNeed = {0}, creatureToGive = {1}", creatureInNeed, bestMatch);
-                bestMatch.ShareEnergy(energyNeeded);
-                creatureInNeed.ReceiveEnergy(Mathf.Max(energyNeeded - energyLoss, 0));
+                bestMatch.ShareEnergy(energyNeeded, creatureInNeed);
 //                Debug.LogFormat("Energy shared: energy exchanged = {0}, creatureInNeed = {1}, creatureToGive = {2}", energyNeeded, creatureInNeed, bestMatch);
             } else {
 //                Debug.LogFormat("No creature would to share energy with: {0}", creatureInNeed);
             }
         }
 
-        /// Calculate energy loss during energy sharing based on the distance between both creatures.
-        /// Also take into account the speed and energy drain of both creatures
-        private float EnergySharingLoss(Creature creature1, Creature creature2) {
-            return (creature1.Speed + creature2.Speed) / Vector3.Distance(creature1.transform.position, creature2.transform.position) * (creature1.EnergyDepletionRate + creature2.EnergyDepletionRate);
+        /// <summary>
+        /// Shares the excess energy maybe.
+        /// </summary>
+        /// <returns><c>true</c>, if excess energy was shared, <c>false</c> otherwise.</returns>
+        /// <param name="creatureToGive">Creature to give.</param>
+        public bool ShareExcessEnergyMaybe(Creature creatureToGive) {
+            if (creatureToGive.Altruism < shareExcessEnergyAltruismThreshold) {
+                return false;
+            }
+
+            float excessEnergy = creatureToGive.Energy - creatureToGive.EnergyStorageCapacity;
+            if (excessEnergy <= 0) {
+                return false;
+            }
+
+            float energyMin = creatureToGive.Energy;
+            int energyMinIndex = -1; // index of a creature with lowest energy
+            Group ownGroup = creatureToGive.Group;
+            for (int i = 0; i < ownGroup.CreaturesCount; i++) {
+                if (ownGroup[i].Energy < energyMin) {
+                    energyMin = ownGroup[i].Energy;
+                    energyMinIndex = i;
+                }
+            }
+
+            if (energyMinIndex > 0) {
+                creatureToGive.ShareEnergy(excessEnergy, ownGroup[energyMinIndex]);
+                return true;
+            }
+
+            return false;
         }
 
 #endregion

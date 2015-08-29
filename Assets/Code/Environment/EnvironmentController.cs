@@ -14,6 +14,7 @@ namespace SurvivalOfTheAlturist.Environment {
         private float energyStorage = 0;
 
         private int numOfAllGeneratedEnergy = 0;
+        private int numOfAllCollectedEnergy = 0;
         private float sumOfAllGeneratedEnergy = 0;
 
 #endregion
@@ -57,6 +58,8 @@ namespace SurvivalOfTheAlturist.Environment {
 
         public int NumOfAllGeneratedEnergy { get { return numOfAllGeneratedEnergy; } }
 
+        public int NumOfAllCollectedEnergy { get { return numOfAllCollectedEnergy; } }
+
         public float SumOfAllGeneratedEnergy { get { return sumOfAllGeneratedEnergy; } }
 
         public EnergyGenerator EnergyGenerator { 
@@ -91,6 +94,7 @@ namespace SurvivalOfTheAlturist.Environment {
             gameObject.SetActive(true);
 
             numOfAllGeneratedEnergy = 0;
+            numOfAllCollectedEnergy = 0;
             sumOfAllGeneratedEnergy = 0;
         }
 
@@ -99,8 +103,11 @@ namespace SurvivalOfTheAlturist.Environment {
 #region IReport implementation
 
         public string GetReport() {
-            return string.Format("Environment controller: numOfAllGeneratedEnergy = {0}, sumOfAllGeneratedEnergy = {1},\n  generator = {2}", 
-                numOfAllGeneratedEnergy, sumOfAllGeneratedEnergy, energyGenerator.GetReport());
+            return string.Format("Environment controller:" +
+            "\n - Energy: generated = {0} (amount = {1}), collected = {2}, not collected = {3}," +
+            "\n - Generator: {4}", 
+                numOfAllGeneratedEnergy, sumOfAllGeneratedEnergy, numOfAllCollectedEnergy, (numOfAllGeneratedEnergy - numOfAllCollectedEnergy), 
+                energyGenerator.GetReport());
         }
 
 #endregion
@@ -120,6 +127,7 @@ namespace SurvivalOfTheAlturist.Environment {
         }
 
         public bool RemoveEnvironmentObject(EnvironmentObject envObj) {
+            numOfAllCollectedEnergy++;
             Object.Destroy(envObj.gameObject);
             return environmentObjects.Remove(envObj);
         }

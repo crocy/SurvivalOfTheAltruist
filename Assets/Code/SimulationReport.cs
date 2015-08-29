@@ -64,7 +64,7 @@ namespace SurvivalOfTheAlturist {
 //            string path = PathToReports + "/" + string.Format(ReportsFileName, simulation.Date).Replace(":", ".") + " - G[" + simulation.groups.Count + "].txt";
             string name = string.Format(ReportsFileName, simulation.Date).Replace(":", ".");
 //            name += string.Format(" - G[{0}].txt", simulation.groups.Count);
-            name += string.Format(" - {0} - {1}.txt", simulation.GetGeneratorTag(), simulation.GetGroupsTags());
+            name += string.Format(" - {0} - {1} - {2}.txt", simulation.EnergyStorageCapacityTag, simulation.GeneratorTag, simulation.GetGroupsTags());
             string path = PathToReports + "/" + name;
             string report = simulation.GetReport();
 

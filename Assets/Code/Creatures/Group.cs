@@ -18,7 +18,7 @@ namespace SurvivalOfTheAlturist.Creatures {
 #region Serialized fields
 
         [SerializeField]
-        private string tag;
+        private string tag = null;
 
         [SerializeField]
         [Range(1, 100)]
@@ -50,11 +50,7 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         public int GroupId { get { return groupId; } }
 
-        public string Tag {
-            get {
-                return string.Format("{0}[{1}]", tag, creatures.Count);
-            }
-        }
+        public string Tag { get { return string.Format("{0}[{1}]", tag, creatures.Count); } }
 
         public int GenNumOfCreatures { get { return genNumOfCreatures; } }
 
@@ -84,25 +80,25 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         public int CreaturesCount { get { return creatures.Count; } }
 
-        public float EnergyCollectedSum {
-            get {
-                float energyCollectedSum = 0;
-                foreach (var creature in creatures) {
-                    energyCollectedSum += creature.EnergyCollected;
-                }
-                return energyCollectedSum;
-            }
-        }
-
-        public float EnergySharedSum {
-            get {
-                float energySharedSum = 0;
-                foreach (var creature in creatures) {
-                    energySharedSum += creature.EnergyShared;
-                }
-                return energySharedSum;
-            }
-        }
+        //        public float EnergyCollectedSum {
+        //            get {
+        //                float energyCollectedSum = 0;
+        //                foreach (var creature in creatures) {
+        //                    energyCollectedSum += creature.EnergyCollected;
+        //                }
+        //                return energyCollectedSum;
+        //            }
+        //        }
+        //
+        //        public float EnergySharedSum {
+        //            get {
+        //                float energySharedSum = 0;
+        //                foreach (var creature in creatures) {
+        //                    energySharedSum += creature.EnergyShared;
+        //                }
+        //                return energySharedSum;
+        //            }
+        //        }
 
 #endregion
 
@@ -134,13 +130,37 @@ namespace SurvivalOfTheAlturist.Creatures {
 
             int alive = 0;
             float lifetimeTotal = 0;
+            float lifetimeMin = float.MaxValue;
+            float lifetimeMax = 0;
             float[] lifetimes = new float[creatures.Count];
 
+
+            float energyCollectedSum = 0;
+            float energySharedSum = 0;
+            float energySharedTimesSum = 0;
+            float energyReceivedTimesSum = 0;
+            float energyWastedSum = 0;
+            Creature creature;
+
             for (int i = 0; i < creatures.Count; i++) {
-                lifetimes[i] = creatures[i].GetLifetime();
+                creature = creatures[i];
+                lifetimes[i] = creature.GetLifetime();
                 lifetimeTotal += lifetimes[i];
 
-                if (creatures[i].State != CreatureState.Dead) {
+                if (lifetimeMin > lifetimes[i]) {
+                    lifetimeMin = lifetimes[i];
+                }
+                if (lifetimeMax < lifetimes[i]) {
+                    lifetimeMax = lifetimes[i];
+                }
+
+                energyCollectedSum += creature.EnergyCollected;
+                energySharedSum += creature.EnergyShared;
+                energySharedTimesSum += creature.EnergySharedTimes;
+                energyReceivedTimesSum += creature.EnergyReceivedTimes;
+                energyWastedSum += creature.EnergyWasted;
+
+                if (creature.State != CreatureState.Dead) {
                     alive++;
                 }
             }
@@ -149,9 +169,10 @@ namespace SurvivalOfTheAlturist.Creatures {
             float lifetimeMedian = lifetimes[lifetimes.Length / 2];
 
             builder.AppendFormat("{0}\n", ToString());
-            builder.AppendFormat("  (Creatures: alive = {0}, dead = {1}, lifetime: average = {2}, median = {3})\n",
-                alive, creatures.Count - alive, lifetimeTotal / creatures.Count, lifetimeMedian);
-            builder.AppendFormat("  (Energy sum: collected = {0}, shared = {1})\n", EnergyCollectedSum, EnergySharedSum);
+            builder.AppendFormat("  (Creatures: alive = {0}, dead = {1}, lifetime: average = {2}, median = {3}, min = {4}, max = {5})\n",
+                alive, creatures.Count - alive, lifetimeTotal / creatures.Count, lifetimeMedian, lifetimeMin, lifetimeMax);
+            builder.AppendFormat("  (Energy sum: collected = {0}, shared = {1} [{2}x] (received = {4}), wasted = {3})\n",
+                energyCollectedSum, energySharedSum, energySharedTimesSum, energyWastedSum, energyReceivedTimesSum);
             builder.AppendLine("-------------------------------------------------------------------------------");
             foreach (var item in creatures) {
                 builder.AppendFormat("  {0}\n", item.GetReport());
@@ -164,7 +185,7 @@ namespace SurvivalOfTheAlturist.Creatures {
 #endregion
 
         public override string ToString() {
-            return string.Format("[Group: \"{0}\", Tag = {1}, GroupId = {2}, AltruismMin = {3:0.000}, AltruismMax = {4:0.000}, EnergyStartMin = {5:0.000}, EnergyStartMax = {6:0.000}, CreaturesCount = {7}]",
+            return string.Format("[Group: \"{0}\", Tag = {1}, GroupId = {2}, AltruismMin = {3}, AltruismMax = {4}, EnergyStartMin = {5}, EnergyStartMax = {6}, CreaturesCount = {7}]",
                 name, Tag, GroupId, AltruismMin, AltruismMax, EnergyStartMin, EnergyStartMax, CreaturesCount);
         }
 
@@ -179,7 +200,7 @@ namespace SurvivalOfTheAlturist.Creatures {
                 creature = creatureController.GenerateCreature(this);
                 creature.name = string.Format("Creature ({0:00})", i);
                 creature.Altruism = UnityEngine.Random.Range(altruismMin, altruismMax);
-                creature.CollectEnergy(UnityEngine.Random.Range(energyStartMin, energyStartMax));
+//                creature.CollectEnergy(UnityEngine.Random.Range(energyStartMin, energyStartMax));
 
                 groupAltruism += creature.Altruism;
 

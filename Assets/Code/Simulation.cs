@@ -49,6 +49,10 @@ namespace SurvivalOfTheAlturist {
             set { endTime = value; }
         }
 
+        public string GeneratorTag { get { return mainController.EnvironmentController.EnergyGenerator.Tag; } }
+
+        public string EnergyStorageCapacityTag { get { return string.Format("ESC[{0}]", mainController.CreatureController.EnergyStorageCapacity); } }
+
 #endregion
 
         public Simulation(MainController mainController, float startTime) {
@@ -92,9 +96,6 @@ namespace SurvivalOfTheAlturist {
             return builder.ToString();
         }
 
-        public string GetGeneratorTag() {
-            return mainController.EnvironmentController.EnergyGenerator.Tag;
-        }
     }
 }
 

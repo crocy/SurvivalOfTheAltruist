@@ -138,6 +138,10 @@ Prefab:
       propertyPath: environmentController
       value: 
       objectReference: {fileID: 248991522}
+    - target: {fileID: 11461710, guid: d9adc53da1f35a04fb8e7543516ddbe1, type: 2}
+      propertyPath: numOfSimulationsToRun
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d9adc53da1f35a04fb8e7543516ddbe1, type: 2}
   m_IsPrefabParent: 0
@@ -313,6 +317,10 @@ Prefab:
       propertyPath: mainContoller
       value: 
       objectReference: {fileID: 2082805314}
+    - target: {fileID: 11456094, guid: d39ad404e56309744a769830eced4dbf, type: 2}
+      propertyPath: energyStorageCapacity
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d39ad404e56309744a769830eced4dbf, type: 2}
   m_IsPrefabParent: 0
@@ -359,6 +367,16 @@ Prefab:
       propertyPath: mainContoller
       value: 
       objectReference: {fileID: 2082805314}
+    - target: {fileID: 11418126, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}
+      propertyPath: groups.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: bd287b557087cd14d99cfc58a82d7aa2,
+        type: 2}
+    - target: {fileID: 11418126, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}
+      propertyPath: groups.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 633bebcaab8fa984ba4f74c83d1c1a82,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}
   m_IsPrefabParent: 0
