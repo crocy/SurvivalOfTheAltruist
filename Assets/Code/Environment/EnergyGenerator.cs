@@ -45,7 +45,9 @@ namespace SurvivalOfTheAlturist.Environment {
 
 #region Properties
 
-        public string Tag { get { return string.Format("EG[{0}]", tag); } }
+        public string Tag { get { return tag; } }
+
+        public string TagFromat { get { return string.Format("EG[{0}]", tag); } }
 
         public EnergyGeneratorType Type { get { return type; } }
 

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SurvivalOfTheAlturist {
+﻿namespace SurvivalOfTheAlturist {
 
     public interface IReport {
 

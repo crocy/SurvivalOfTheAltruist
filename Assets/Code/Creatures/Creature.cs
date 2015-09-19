@@ -11,7 +11,7 @@ namespace SurvivalOfTheAlturist.Creatures {
         Dead,
     }
 
-    public class Creature : WorldObject, IReport {
+    public class Creature : WorldObject, IReport, IExport {
 
 #region Class fields
 
@@ -265,6 +265,27 @@ namespace SurvivalOfTheAlturist.Creatures {
             if (energyWasted > 0) {
                 builder.AppendFormat(", wasted = {0:0.00}", energyWasted);
             }
+
+            return builder.ToString();
+        }
+
+#endregion
+
+#region IExport implementation
+
+        public string GetHeader() {
+//            return "name | altruism | speedBase | lifetime | energyCollected | energyReceived | erTimes | energyShared | esTimes | wasted";
+//            return "groupTag|name|altruism|speedBase|lifetime|energyCollected|energyReceived|erTimes|energyShared|esTimes|wasted";
+            return string.Format("groupTag{0}altruism{0}speedBase{0}lifetime{0}energyCollected{0}energyReceived{0}erTimes{0}energyShared{0}esTimes{0}wasted", Export.Separator);
+        }
+
+        public string GetExport() {
+            StringBuilder builder = new StringBuilder();
+
+//            builder.AppendFormat("\"{1}\"{0}\"{2}\"{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}{0}{11}",
+//                Export.Separator, group.Tag, name, altruism, speedBase, GetLifetime(), energyCollected, energyReceived, energyReceivedTimes, energyShared, energySharedTimes, energyWasted);
+            builder.AppendFormat("\"{1}\"{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}",
+                Export.Separator, group.Tag, altruism, speedBase, GetLifetime(), energyCollected, energyReceived, energyReceivedTimes, energyShared, energySharedTimes, energyWasted);
 
             return builder.ToString();
         }

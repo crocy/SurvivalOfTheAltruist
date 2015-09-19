@@ -36,6 +36,8 @@ namespace SurvivalOfTheAlturist {
         [SerializeField]
         private bool runInBackground = false;
         [SerializeField]
+        private SimulationReport.SaveType reportSaveType = SimulationReport.SaveType.All;
+        [SerializeField]
         private int randomSeedOverride = 0;
         [SerializeField]
         private int simulationMaxTime = 600;
@@ -183,7 +185,7 @@ namespace SurvivalOfTheAlturist {
             } else if (Input.GetKeyDown(KeyCode.S)) {
                 SimulationReport.PrintCurrentReport();
             } else if (Input.GetKeyDown(KeyCode.O)) {
-                SimulationReport.SaveToFile(SimulationReport.GetCurrentSimulation());
+                SimulationReport.SaveToFile(SimulationReport.GetCurrentSimulation(), reportSaveType);
             } else if (Input.GetKeyDown(KeyCode.Space)) {
                 TimePause = !TimePause;
             } else if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMinus)) {
@@ -221,7 +223,7 @@ namespace SurvivalOfTheAlturist {
 
         private void StopSimulation() {
             if (SimulationReport.IsSimulationRunning) {
-                SimulationReport.SaveToFile(SimulationReport.GetCurrentSimulation());
+                SimulationReport.SaveToFile(SimulationReport.GetCurrentSimulation(), reportSaveType);
                 SimulationReport.StopSimulationReport();
                 Debug.Log("Smulation ended. Press 'R' or 'P' to restart the simulation.");
             }

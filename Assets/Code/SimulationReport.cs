@@ -1,10 +1,17 @@
 ﻿using System;
 using UnityEngine;
 using System.IO;
+using System.Text;
 
 namespace SurvivalOfTheAlturist {
 
     public class SimulationReport {
+
+        public enum SaveType {
+            All,
+            TextOnly,
+            CsvOnly
+        }
 
 #region Class fields
 
@@ -59,21 +66,61 @@ namespace SurvivalOfTheAlturist {
             Debug.Log(currentSimulation.GetReport());
         }
 
-        public static void SaveToFile(Simulation simulation) {
-//            string path = PathToReports + "/" + string.Format(ReportsFileName, simulation.Date).Replace(":", ".") + ".txt";
-//            string path = PathToReports + "/" + string.Format(ReportsFileName, simulation.Date).Replace(":", ".") + " - G[" + simulation.groups.Count + "].txt";
+        public static void SaveToFile(Simulation simulation, SaveType saveType = SaveType.All) {
+            //            string path = PathToReports + "/" + string.Format(ReportsFileName, simulation.Date).Replace(":", ".") + ".txt";
+            //            string path = PathToReports + "/" + string.Format(ReportsFileName, simulation.Date).Replace(":", ".") + " - G[" + simulation.groups.Count + "].txt";
             string name = string.Format(ReportsFileName, simulation.Date).Replace(":", ".");
-//            name += string.Format(" - G[{0}].txt", simulation.groups.Count);
-            name += string.Format(" - {0} - {1} - {2}.txt", simulation.EnergyStorageCapacityTag, simulation.GeneratorTag, simulation.GetGroupsTags());
+            //            name += string.Format(" - G[{0}].txt", simulation.groups.Count);
+            name += string.Format(" - {0} - {1} - {2}.txt", simulation.EnergyStorageCapacityTagFormat, simulation.GeneratorTagFormat, simulation.GetGroupsTags());
             string path = PathToReports + "/" + name;
-            string report = simulation.GetReport();
 
-            using (var fileStream = File.CreateText(path)) {
-                fileStream.WriteLine(report);
+            // save all or text only format
+            switch (saveType) {
+                case SaveType.All:
+                case SaveType.TextOnly:
+                    string report = simulation.GetReport();
+
+                    using (var fileStream = File.CreateText(path)) {
+                        fileStream.WriteLine(report);
+                    }
+                    Debug.LogFormat("Report saved to: {0}\nReport:\n{1}", path, report);
+                    break;
             }
 
-            Debug.LogFormat("Report saved to: {0}\nReport:\n{1}", path, report);
+            // save all or cvs only
+            switch (saveType) {
+                case SaveType.All:
+                case SaveType.CsvOnly:
+                    StringBuilder builder = new StringBuilder();
+                    name = name.Replace(".txt", ".csv");
+                    path = PathToReports + "/" + name;
+
+                    // get header
+                    builder.AppendFormat("{1}{0}{2}\n", Export.Separator, currentSimulation.groups[0][0].GetHeader(), GetHeader());
+
+                    foreach (var group in currentSimulation.groups) {
+                        foreach (var creature in group.Creatures) {
+                            builder.AppendFormat("{1}{0}{2}\n", Export.Separator, creature.GetExport(), GetExport(simulation));
+                        }
+                    }
+
+                    using (var fileStream = File.CreateText(path)) {
+                        fileStream.WriteLine(builder);
+                    }
+                    break;
+            }
         }
 
+#region IExport implementation
+
+        public static string GetHeader() {
+            return string.Format("esc{0}generator", Export.Separator);
+        }
+
+        public static string GetExport(Simulation simulation) {
+            return string.Format("{1}{0}\"{2}\"", Export.Separator, simulation.EnergyStorageCapacity, simulation.GeneratorTag);
+        }
+
+#endregion
     }
 }

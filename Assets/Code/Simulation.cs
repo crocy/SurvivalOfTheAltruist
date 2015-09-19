@@ -51,7 +51,11 @@ namespace SurvivalOfTheAlturist {
 
         public string GeneratorTag { get { return mainController.EnvironmentController.EnergyGenerator.Tag; } }
 
-        public string EnergyStorageCapacityTag { get { return string.Format("ESC[{0}]", mainController.CreatureController.EnergyStorageCapacity); } }
+        public string GeneratorTagFormat { get { return mainController.EnvironmentController.EnergyGenerator.TagFromat; } }
+
+        public float EnergyStorageCapacity { get { return mainController.CreatureController.EnergyStorageCapacity; } }
+
+        public string EnergyStorageCapacityTagFormat { get { return string.Format("ESC[{0}]", EnergyStorageCapacity); } }
 
 #endregion
 
@@ -89,7 +93,7 @@ namespace SurvivalOfTheAlturist {
         public string GetGroupsTags() {
             StringBuilder builder = new StringBuilder();
             foreach (var group in groups) {
-                builder.AppendFormat("{0}, ", group.Tag);
+                builder.AppendFormat("{0}, ", group.TagFormat);
             }
             builder.Length -= 2; // remove the last ", " part
 

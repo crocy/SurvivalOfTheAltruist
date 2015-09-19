@@ -50,7 +50,9 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         public int GroupId { get { return groupId; } }
 
-        public string Tag { get { return string.Format("{0}[{1}]", tag, creatures.Count); } }
+        public string Tag { get { return tag; } }
+
+        public string TagFormat { get { return string.Format("{0}[{1}]", tag, creatures.Count); } }
 
         public int GenNumOfCreatures { get { return genNumOfCreatures; } }
 
@@ -79,6 +81,8 @@ namespace SurvivalOfTheAlturist.Creatures {
         }
 
         public int CreaturesCount { get { return creatures.Count; } }
+
+        public List<Creature> Creatures { get { return creatures; } }
 
         //        public float EnergyCollectedSum {
         //            get {
@@ -186,7 +190,7 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         public override string ToString() {
             return string.Format("[Group: \"{0}\", Tag = {1}, GroupId = {2}, AltruismMin = {3}, AltruismMax = {4}, EnergyStartMin = {5}, EnergyStartMax = {6}, CreaturesCount = {7}]",
-                name, Tag, GroupId, AltruismMin, AltruismMax, EnergyStartMin, EnergyStartMax, CreaturesCount);
+                name, TagFormat, GroupId, AltruismMin, AltruismMax, EnergyStartMin, EnergyStartMax, CreaturesCount);
         }
 
         public void InitGroup(CreatureController creatureController) {
