@@ -35,3 +35,6 @@ Thumbs.db
 # ============ #
 export/
 *.*~
+.Rproj.user
+.Rhistory
+R_Project/data
