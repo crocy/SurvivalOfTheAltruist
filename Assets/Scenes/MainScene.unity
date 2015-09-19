@@ -142,6 +142,10 @@ Prefab:
       propertyPath: numOfSimulationsToRun
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 11461710, guid: d9adc53da1f35a04fb8e7543516ddbe1, type: 2}
+      propertyPath: reportSaveType
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d9adc53da1f35a04fb8e7543516ddbe1, type: 2}
   m_IsPrefabParent: 0
@@ -331,6 +335,10 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 11418126, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}
+      propertyPath: groups.Array.size
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 411382, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -370,12 +378,12 @@ Prefab:
     - target: {fileID: 11418126, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}
       propertyPath: groups.Array.data[0]
       value: 
-      objectReference: {fileID: 11400000, guid: bd287b557087cd14d99cfc58a82d7aa2,
+      objectReference: {fileID: 11400000, guid: 249666f91497a8242a2c5a5389c60082,
         type: 2}
     - target: {fileID: 11418126, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}
       propertyPath: groups.Array.data[1]
       value: 
-      objectReference: {fileID: 11400000, guid: 633bebcaab8fa984ba4f74c83d1c1a82,
+      objectReference: {fileID: 11400000, guid: 7dc8f6b188d7c634e8aa36d057ee5afb,
         type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}
