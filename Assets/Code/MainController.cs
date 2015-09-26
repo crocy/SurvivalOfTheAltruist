@@ -14,6 +14,7 @@ namespace SurvivalOfTheAlturist {
 
         private float prePauseTimeScale;
         private int simulationsRan = 0;
+        private int generatorsForSimulationBatchesCount = 0;
 
 #endregion
 
@@ -58,6 +59,8 @@ namespace SurvivalOfTheAlturist {
 
         public GroupController GroupController { get { return groupController; } }
 
+        public int RandomSeedOverride { get { return randomSeedOverride; } }
+
         public float TimeScale {
             get {
                 return Time.timeScale;
@@ -80,7 +83,17 @@ namespace SurvivalOfTheAlturist {
             }
         }
 
-        public int RandomSeedOverride { get { return randomSeedOverride; } }
+        public float SimulationsProgress {
+            get {
+                if (SimulationReport.IsSimulationRunning) {
+//                    Debug.LogFormat("simulationsRan = {0}, generatorsForSimulationBatches.Count = {1} generatorsForSimulationBatchesCount = {2}, max = {3}",
+//                        simulationsRan, generatorsForSimulationBatches.Count, generatorsForSimulationBatchesCount, numOfSimulationsToRun * generatorsForSimulationBatchesCount);
+                    return ((float)simulationsRan + numOfSimulationsToRun * (generatorsForSimulationBatchesCount - generatorsForSimulationBatches.Count - 1)) / (numOfSimulationsToRun * generatorsForSimulationBatchesCount);
+                }
+
+                return -1;
+            }
+        }
 
 #endregion
 
@@ -157,6 +170,7 @@ namespace SurvivalOfTheAlturist {
             Application.runInBackground = runInBackground;
 
             if (generatorsForSimulationBatches != null && generatorsForSimulationBatches.Count > 0) {
+                generatorsForSimulationBatchesCount = generatorsForSimulationBatches.Count;
                 environmentController.EnergyGenerator = generatorsForSimulationBatches[0];
                 generatorsForSimulationBatches.RemoveAt(0);
             }
