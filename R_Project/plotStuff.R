@@ -19,3 +19,7 @@ qplot(altruism, lifetime, data = dataAll, facets = . ~ generator, geom = "densit
 qplot(altruism, lifetime, data = dataAll, color = generator, geom = "smooth")
 qplot(altruism, lifetime, data = dataAll, color = generator, geom = "smooth", shape = groupTag)
 qplot(altruism, lifetime, data = dataAll, fill = generator, geom = "smooth", shape = groupTag)
+
+qplot(altruism, lifetime, data = esc1a2, color = generator, geom = c("smooth", "point"), alpha = energyShared, size = energyShared)
+
+qplot(altruism, lifetime, data = esc1a2, geom = "boxplot", fill = groupTag)
