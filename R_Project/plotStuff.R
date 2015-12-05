@@ -23,3 +23,4 @@ qplot(altruism, lifetime, data = dataAll, fill = generator, geom = "smooth", sha
 qplot(altruism, lifetime, data = esc1a2, color = generator, geom = c("smooth", "point"), alpha = energyShared, size = energyShared)
 
 qplot(altruism, lifetime, data = esc1a2, geom = "boxplot", fill = groupTag)
+qplot(altruism, lifetime, data = esc1a3, geom = "boxplot", facets = . ~ generator, fill = groupTag)
