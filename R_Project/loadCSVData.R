@@ -43,3 +43,27 @@ runTTest <- function(dataAll1, dataAll2, pa = FALSE, ve = FALSE) {
   print("t-test for generator S")
   print(t.test(a$genS, b$genS, paired = pa, var.equal = ve))
 }
+
+varsToData <- function() {
+  print("starting...")
+  l = grep("esc", ls(.GlobalEnv))
+  print(l)
+  returnData = NULL
+  sprintf("list = %s", l)
+
+  for (n in l) {
+    sprintf("name = %i", n)
+    print(n)
+    s = ls(.GlobalEnv)[n]
+    sprintf("item = %s", names(s))
+    print(s)
+    run = substr(s, 5, 10)
+    sprintf("run = %s", run)
+    print(run)
+    temp = get(s)
+    temp$run <- run
+    returnData = rbind(returnData, temp)
+  }
+
+  return(returnData)
+}
