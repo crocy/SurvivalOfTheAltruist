@@ -23,6 +23,36 @@ savePlotsP <- function(dataList, folder = "./", plotFunct, facet = NULL) {
 
 # dataAll = loadCsvData()
 
+### astetics
+
+fs_atitle = 23 # font size: axis title
+fs_atext = 17 # font size: axis title
+fs_l = 17 # font size: legend
+fs_strip = 20 # font size: strip/facets
+
+themeLegend <- theme(
+  legend.position="bottom",
+  legend.title = element_text(size = fs_l),
+  legend.text = element_text(size = fs_l),
+  axis.title.x = element_text(size = fs_atitle),
+  axis.title.y = element_text(size = fs_atitle),
+  axis.text.x = element_text(size = fs_atext),
+  axis.text.y = element_text(size = fs_atext),
+  strip.text.x = element_text(size = fs_strip),
+  strip.text.y = element_text(size = fs_strip)
+)
+
+labelsGroups <- c(expression("G"["S"]), expression("G"["DS"]), expression("G"["DA"]), expression("G"["A"]))
+
+# legendGroups <- scale_fill_discrete(name = "Skupine:", labels = labelsGroups)
+legendGroups <- scale_fill_hue(name = "Skupine:", labels = labelsGroups)
+
+
+### save plot
+# png("plot.png", width = 1024, height = 800)
+dev.copy(png, "plot.png", width = 1024, height = 800); dev.off()
+
+
 qplot(lifetime, data = dataAll, color = groupTag, binwidth = 5)
 qplot(lifetime, data = dataAll, fill = generator, size = groupTag, binwidth = 5)
 qplot(lifetime, data = dataAll, color = groupTag, geom = "density")
@@ -52,8 +82,10 @@ qplot(altruism, lifetime, data = esc1a2, color = generator, geom = c("smooth", "
 qplot(altruism, lifetime, data = esc1a2, geom = "boxplot", fill = groupTag)
 qplot(altruism, lifetime, data = esc1a3, geom = "boxplot", facets = . ~ generator, fill = groupTag)
 
-qplot(altruism, lifetime, data = dataAll, geom = "violin", fill = groupTag, facets = esc ~ generator)
-
+qplot(altruism, lifetime, data = dataAll, geom = "violin", fill = groupTag, facets = esc ~ generator) +
+  xlab("Stopnja altruizma") + ylab("Življenska doba") +
+  legendGroups +
+  themeLegend
 
 # savePlotsP(dataList, "density", qplot(lifetime, geom = "density", color = groupTag))
 # savePlotsP(dataList, "density2d-facet", qplot(altruism, lifetime, geom = "density2d", color = groupTag), facet_grid(. ~ generator))
@@ -71,17 +103,39 @@ qplot(altruism, lifetime, data = dataAll, geom = "violin", fill = groupTag, face
 # savePlotsP(dataList, "smooth-groupTag", qplot(speedBase, energyCollected, geom = "smooth", color = groupTag))
 
 
-ggplot(dataAll, aes(esc, lifetime, group=groupTag)) +
+# ggplot(dataAll, aes(esc, lifetime)) +
+#   facet_grid(groupTag ~ generator) +
+#   geom_point(alpha = 1/50, position = "jitter", aes(color = groupTag)) +
+#   geom_smooth(method = "lm", formula = y ~ x, size = 1)
+ggplot(dataAll, aes(esc, lifetime)) +
   facet_grid(groupTag ~ generator) +
-  geom_point(alpha=1/50, position="jitter") +
-  geom_smooth(method="lm", formula=y~x)
+  geom_point(alpha = 1/50, position = "jitter") +
+  geom_smooth(method = "lm", formula = y ~ x, size = 1) +
+  xlab("Stopnja altruizma") + ylab("Življenska doba") +
+  scale_fill_discrete(name = "Skupine:", labels = c(expression("G_S"), "G_DS", "G_DA", "G_A")) +
+  themeLegend
 
-ggplot(dataAll, aes(groupTag, lifetime, group=esc)) +
-  facet_grid(esc ~ generator) +
-  geom_point(alpha=1/50, position="jitter") +
-  geom_smooth(method="lm", formula=y~x)
+ggplot(dataAll, aes(groupTag, lifetime, group = esc)) +
+  facet_grid(esc ~ generator)       +
+  geom_point(alpha = 1/50, position="jitter", aes(color = groupTag)) +
+  geom_smooth(method = "lm", formula = y ~ x, size = 1)
 
-ggplot(subset(dataAllA, run != "r30"), aes(altruism, lifetime)) +
+# ggplot(dataAll, aes(altruism, lifetime)) +
+#   facet_grid(esc ~ generator) +
+#   geom_point(alpha = 1/50, position = "jitter", aes(color = groupTag)) +
+#   geom_smooth(method = "lm", formula = y ~ x, size = 1)
+ggplot(dataAll, aes(altruism, lifetime)) +
   facet_grid(esc ~ generator) +
-  geom_point(alpha=1/50, position="jitter", aes(color = groupTag)) +
-  geom_smooth(method="lm", formula=y~x, size = 1)
+  geom_point(alpha = 1/50, position = "jitter", aes(color = groupTag)) +
+  scale_fill_discrete("Skupine") +
+  geom_smooth(method = "lm", formula = y ~ x, size = 1) +
+  xlab("Stopnja altruizma") + ylab("Življenska doba") +
+  guides(colour = guide_legend(override.aes = list(alpha = 1)))
+  # legendGroups +
+  # themeLegend +
+  # scale_fill_manual(name = "Skupine:", labels = labelsGroups)
+
+
+ggplot(dataAll, aes(speedBase, lifetime)) + geom_point(aes(color = generator), alpha = 1/50) + facet_grid(. ~ generator) + geom_smooth()
+
+ggplot(dataAll, aes(speedBase, energyCollected)) + geom_jitter(aes(color = generator), alpha = 1/50) + facet_grid(. ~ generator) + geom_smooth(size = 1) + coord_cartesian(ylim = c(0, 15))

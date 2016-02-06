@@ -67,3 +67,18 @@ varsToData <- function() {
 
   return(returnData)
 }
+
+summ <- function(selectedCol) {
+  for (run in vecRun) {
+    for (esc in vecEsc) {
+      # print(paste("Summary for: run = ", run, ", esc = ", esc))
+      tempSum = summary(dataAllA[dataAllA$run == run & dataAllA$esc == esc, selectedCol])
+      temp = NULL
+      for (i in 1:6) {
+        temp = paste(temp, "&", tempSum[[i]])
+      }
+      temp = paste(temp, "\\")
+      print(temp)
+    }
+  }
+}
