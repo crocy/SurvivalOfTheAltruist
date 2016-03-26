@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 794469288a7164546b844b463d8e2e39, type: 3}
+  m_Name: EnergyGenerator - Scarcity 2
+  m_EditorClassIdentifier: 
+  tag: S2
+  type: 1
+  startEnergy: 10
+  generationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: -.200000003
+      outSlope: -.200000003
+      tangentMode: 10
+    - time: 5
+      value: -1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 35
+      value: -1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 40
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 50
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 55
+      value: 0
+      inSlope: -.200000003
+      outSlope: -.200000003
+      tangentMode: 10
+    m_PreInfinity: 2
+    m_PostInfinity: 1
+  generatorEnabled:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  disableGeneratorWhenNetFlowNegative: 1
