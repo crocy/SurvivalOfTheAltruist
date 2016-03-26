@@ -100,9 +100,11 @@ namespace SurvivalOfTheAlturist.Creatures {
 #region IController implementation
 
         public void Reset() {
+//            Debug.Log("Resetting creature controller...");
             //            GenerateCreatures();
             RemoveAllCreatures();
             gameObject.SetActive(true);
+//            Debug.Log("Done.");
         }
 
 #endregion
@@ -212,10 +214,11 @@ namespace SurvivalOfTheAlturist.Creatures {
 
         private void UpdateCreatures() {
             if (creatures.Count == 0) {
+                gameObject.SetActive(false);
+
                 if (onAllCreaturesDied != null) {
                     onAllCreaturesDied();
                 }
-                gameObject.SetActive(false);
                 return;
             }
 

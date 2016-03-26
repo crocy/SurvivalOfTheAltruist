@@ -246,6 +246,10 @@ namespace SurvivalOfTheAlturist.Creatures {
 //            Gizmos.DrawWireSphere(transform.position, communicationRadius);
         }
 
+        private void OnValidate() {
+            EnergyDetectionRadius = energyDetectionRadius;
+        }
+        
 #endregion
 
 #region IReport implementation

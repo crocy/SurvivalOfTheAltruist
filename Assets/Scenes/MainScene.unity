@@ -37,9 +37,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
---- !u!127 &3
-LevelGameManager:
-  m_ObjectHideFlags: 0
 --- !u!157 &4
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -68,6 +65,7 @@ LightmapSettings:
     m_TextureCompression: 0
     m_FinalGather: 0
     m_FinalGatherRayCount: 1024
+    m_ReflectionCompression: 2
   m_LightmapSnapshot: {fileID: 0}
   m_RuntimeCPUUsage: 25
 --- !u!196 &5
@@ -94,6 +92,10 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 11461710, guid: d9adc53da1f35a04fb8e7543516ddbe1, type: 2}
+      propertyPath: generatorsForSimulationBatches.Array.size
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 453368, guid: d9adc53da1f35a04fb8e7543516ddbe1, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -162,6 +164,21 @@ Prefab:
       propertyPath: worldBounds.m_Extent.y
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 11461710, guid: d9adc53da1f35a04fb8e7543516ddbe1, type: 2}
+      propertyPath: generatorsForSimulationBatches.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 793af4e611ea64f9ead2f51f93058e6c,
+        type: 2}
+    - target: {fileID: 11461710, guid: d9adc53da1f35a04fb8e7543516ddbe1, type: 2}
+      propertyPath: generatorsForSimulationBatches.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 806b1bf61848348799b4c2879d2c170f,
+        type: 2}
+    - target: {fileID: 11461710, guid: d9adc53da1f35a04fb8e7543516ddbe1, type: 2}
+      propertyPath: generatorsForSimulationBatches.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: 2dfcfc732a4516c47859f43e326d7b02,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d9adc53da1f35a04fb8e7543516ddbe1, type: 2}
   m_IsPrefabParent: 0
@@ -277,6 +294,7 @@ Camera:
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
+  m_TargetEye: 3
   m_HDR: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
@@ -369,7 +387,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 11418126, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}
       propertyPath: groups.Array.size
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 411382, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}
       propertyPath: m_LocalPosition.x
@@ -410,22 +428,22 @@ Prefab:
     - target: {fileID: 11418126, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}
       propertyPath: groups.Array.data[0]
       value: 
-      objectReference: {fileID: 11400000, guid: 923cecd44dc74dd4b8a00e2198f7a3d4,
+      objectReference: {fileID: 11400000, guid: b2e5e425594fb479d935ce266cf06f83,
         type: 2}
     - target: {fileID: 11418126, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}
       propertyPath: groups.Array.data[1]
       value: 
-      objectReference: {fileID: 11400000, guid: adae36e796fe7934f94a1d2d1073a88c,
+      objectReference: {fileID: 11400000, guid: e9144bd1edfd24de7af57f29c02b8bf8,
         type: 2}
     - target: {fileID: 11418126, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}
       propertyPath: groups.Array.data[2]
       value: 
-      objectReference: {fileID: 11400000, guid: 1457e8f4295cb66458af6088f7a45f61,
+      objectReference: {fileID: 11400000, guid: e46da0b16a0fdf04e8ec2ee047c43aa0,
         type: 2}
     - target: {fileID: 11418126, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}
       propertyPath: groups.Array.data[3]
       value: 
-      objectReference: {fileID: 11400000, guid: 5992f9b9d20e85d438b59298651e047c,
+      objectReference: {fileID: 11400000, guid: c400a5bf45cc03d41bb570c6f87a83bd,
         type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0bed58dc3c2359e40b3950ade957ddbe, type: 2}

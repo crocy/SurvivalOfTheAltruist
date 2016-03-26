@@ -46,9 +46,10 @@ MonoBehaviour:
   groupController: {fileID: 0}
   environmentController: {fileID: 0}
   runInBackground: 1
+  reportSaveType: 2
   randomSeedOverride: 0
-  simulationMaxTime: 200
-  numOfSimulationsToRun: 1
+  simulationMaxTime: 300
+  numOfSimulationsToRun: 50
   generatorsForSimulationBatches:
   - {fileID: 11400000, guid: 2dfcfc732a4516c47859f43e326d7b02, type: 2}
   - {fileID: 11400000, guid: c2164292bc3ad054888afd8c6cfff2c4, type: 2}

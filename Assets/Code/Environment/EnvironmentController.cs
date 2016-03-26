@@ -89,6 +89,7 @@ namespace SurvivalOfTheAlturist.Environment {
 #region IController implementation
 
         public void Reset() {
+//             Debug.Log("Resetting environment controller...");
             GenerateEnvironment();
 
             gameObject.SetActive(true);
@@ -96,6 +97,8 @@ namespace SurvivalOfTheAlturist.Environment {
             numOfAllGeneratedEnergy = 0;
             numOfAllCollectedEnergy = 0;
             sumOfAllGeneratedEnergy = 0;
+            
+//             Debug.Log("Done.");
         }
 
 #endregion

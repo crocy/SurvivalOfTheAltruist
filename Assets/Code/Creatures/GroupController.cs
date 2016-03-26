@@ -37,8 +37,10 @@ namespace SurvivalOfTheAlturist.Creatures {
 #region IController implementation
 
         public void Reset() {
+//             Debug.Log("Resetting group controller...");
             InitGroups();
             gameObject.SetActive(true);
+//             Debug.Log("Done.");
         }
 
 #endregion
