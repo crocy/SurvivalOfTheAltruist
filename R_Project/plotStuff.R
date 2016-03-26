@@ -1,26 +1,5 @@
 library(ggplot2)
 
-plotAltruismToLifetime <- function(data) {
-  qplot(altruism, lifetime, data = data, color = generator)
-}
-
-savePlotsP <- function(dataList, folder = "./", plotFunct, facet = NULL) {
-  folder = paste("plots/generated/", folder, "_", plotFunct$labels[["x"]], "-", plotFunct$labels[["y"]], "/", sep = "")
-  print(paste("Saving plots to:", folder))
-  if (!dir.exists(folder)) {
-    dir.create(folder)
-  }
-
-  for (i in 1:length(dataList)) {
-    print(paste("Generating plot:", names(dataList[i])))
-
-    plotFunct$data = dataList[[i]]
-    png(paste(folder, names(dataList[i]), ".png", sep = ""), width = 600, height = 400)
-    plot(plotFunct + facet)
-    dev.off()
-  }
-}
-
 # dataAll = loadCsvData()
 
 ### astetics
@@ -70,8 +49,11 @@ labelsGroupsTable <- c("A_0-25" = expression("G"["S"]), "A_25-50" = expression("
 # legendGroups <- scale_fill_discrete(name = "Skupine:", labels = labelsGroups)
 legendGroups <- scale_fill_hue(name = "Skupine:", labels = labelsGroups)
 legendGroupsColor <- scale_color_hue(name = "Skupine:", labels = labelsGroups)
+legendGroupsColorTable <- scale_color_hue(name = "Skupine:", labels = labelsGroupsTable)
 
-
+##################
+# test graphs
+##################
 
 qplot(lifetime, data = dataAll, color = groupTag, binwidth = 5)
 qplot(lifetime, data = dataAll, fill = generator, size = groupTag, binwidth = 5)
@@ -101,21 +83,8 @@ qplot(altruism, lifetime, data = esc1a2, color = generator, geom = c("smooth", "
 
 qplot(altruism, lifetime, data = esc1a2, geom = "boxplot", fill = groupTag)
 qplot(altruism, lifetime, data = esc1a3, geom = "boxplot", facets = . ~ generator, fill = groupTag)
+qplot(altruism, lifetime, data = dataAllE, geom = "boxplot", fill = groupTag)
 
-# savePlotsP(dataList, "density", qplot(lifetime, geom = "density", color = groupTag))
-# savePlotsP(dataList, "density2d-facet", qplot(altruism, lifetime, geom = "density2d", color = groupTag), facet_grid(. ~ generator))
-#
-# savePlotsP(dataList, "boxplot", qplot(altruism, lifetime, geom = "boxplot", fill = groupTag))
-# savePlotsP(dataList, "boxplot-facet", qplot(altruism, lifetime, geom = "boxplot", fill = groupTag), facet_grid(. ~ generator))
-# savePlotsP(dataList, "boxplot-facet", qplot(speedBase, lifetime, geom = "boxplot", fill = generator), facet_grid(. ~ generator))
-#
-# savePlotsP(dataList, "violin-facet", qplot(altruism, lifetime, geom = "violin", fill = groupTag), facet_grid(. ~ generator))
-#
-# savePlotsP(dataList, "smooth", qplot(altruism, lifetime, geom = "smooth", color = generator))
-# savePlotsP(dataList, "smooth", qplot(speedBase, lifetime, geom = "smooth", color = generator))
-# savePlotsP(dataList, "smooth", qplot(speedBase, lifetime, geom = "smooth", color = generator))
-# savePlotsP(dataList, "smooth", qplot(speedBase, energyCollected, geom = "smooth", color = generator))
-# savePlotsP(dataList, "smooth-groupTag", qplot(speedBase, energyCollected, geom = "smooth", color = groupTag))
 
 ##################
 # graphs
@@ -124,35 +93,51 @@ qplot(altruism, lifetime, data = esc1a3, geom = "boxplot", facets = . ~ generato
 # png("plot.png", width = 1024, height = 800)
 dev.copy(png, "plot.png", width = 1024, height = 800); dev.off()
 
-### 1
+### 1: violin-facet_altruism-lifetime_generator-groupTag
 qplot(altruism, lifetime, data = dataAll, geom = "violin", fill = groupTag, facets = esc ~ generator) +
   xlab("Stopnja altruizma") + ylab("Življenska doba") +
   legendGroups +
   themeLegend
 
-### 2
+### 2: custom_altruism-lifetime_generator-esc_1024w
 ggplot(dataAll, aes(altruism, lifetime)) +
   facet_grid(esc ~ generator) +
-  geom_point(alpha = 1/15, position = "jitter", aes(color = groupTag)) +
+  geom_jitter(alpha = 1/15, aes(color = groupTag)) +
   geom_smooth(method = "lm", formula = y ~ x, size = 1) +
   xlab("Stopnja altruizma") + ylab("Življenska doba") +
   guides(colour = guide_legend(override.aes = list(alpha = 1))) +
   legendGroupsColor +
   themeLegend
 
+# ggplot(dataAllEF, aes(altruism, lifetime)) +
+#   facet_grid(. ~ generator) +
+#   geom_jitter(alpha = 1/5, aes(color = groupTag)) +
+#   geom_smooth(method = "lm", formula = y ~ x, size = 1) +
+#   xlab("Stopnja altruizma") + ylab("Življenska doba") +
+#   guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+#   coord_cartesian(ylim = c(0, 300)) +
+#   legendGroupsColor +
+#   themeLegend
+
+# ggplot(dataAllAEF, aes(altruism, lifetime)) +
+#   facet_grid(run ~ generator) +
+#   geom_point(alpha = 1/3, aes(color = groupTag)) +
+#   geom_smooth(method = "lm", formula = y ~ x, size = 1) +
+#   xlab("Stopnja altruizma") + ylab("Življenska doba") +
+#   guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+#   coord_cartesian(ylim = c(0, 300)) +
+#   legendGroupsColor +
+#   themeLegend
+
 ### 3
 ggplot(dataAll, aes(esc, lifetime)) +
   facet_grid(groupTag ~ generator) +
-  geom_point(alpha = 1/15, position = "jitter", aes(color = groupTag)) +
+  geom_jitter(alpha = 1/15, aes(color = groupTag)) +
   geom_smooth(method = "lm", formula = y ~ x, size = 1) +
   xlab("ESC") + ylab("Življenska doba") +
   guides(colour = guide_legend(override.aes = list(alpha = 1))) +
   legendGroupsColor +
   themeNoYStrip
-# ggplot(dataAll, aes(esc, lifetime)) +
-#   facet_grid(groupTag ~ generator) +
-#   geom_point(alpha = 1/50, position = "jitter", aes(color = groupTag)) +
-#   geom_smooth(method = "lm", formula = y ~ x, size = 1)
 
 ### none
 # ggplot(dataAll, aes(groupTag, lifetime, group = esc)) +
@@ -163,7 +148,7 @@ ggplot(dataAll, aes(esc, lifetime)) +
 ### 4
 ggplot(dataAllR, aes(altruism, lifetime)) +
   facet_grid(esc ~ generator) +
-  geom_point(alpha = 1/10, position = "jitter") +
+  geom_jitter(alpha = 1/10) +
   scale_fill_discrete("Skupine") +
   geom_smooth(method = "lm", formula = y ~ x, size = 1) +
   xlab("Stopnja altruizma") + ylab("Življenska doba") +
@@ -176,24 +161,108 @@ ggplot(dataAllR, aes(altruism, lifetime)) +
 ### 5
 ggplot(dataAllR, aes(esc, lifetime)) +
   facet_grid(. ~ generator) +
-  geom_point(alpha = 1/10, position = "jitter") +
+  geom_jitter(alpha = 1/10) +
   geom_smooth(method = "lm", formula = y ~ x, size = 1) +
   xlab("ESC") + ylab("Življenska doba") +
   themeNoLegend
 
-### 6
+### 6: smooth-point-facet_speedBase-lifetime_generator
+# ggplot(dataAll, aes(speedBase, lifetime)) +
+#   geom_point(aes(color = generator), alpha = 1/50) +
+#   facet_grid(. ~ generator) +
+#   geom_smooth() +
+#   xlab("Hitrost premikanja") + ylab("Življenska doba") +
+#   themeNoLegend
+
+# ggplot(dataAll, aes(speedBase, lifetime)) +
+#   geom_point(aes(color = groupTag), alpha = 1/25) +
+#   facet_grid(. ~ generator) +
+#   geom_smooth() +
+#   xlab("Hitrost premikanja") + ylab("Življenska doba") +
+#   guides(colour = guide_legend(override.aes = list(alpha = 1))) + legendGroupsColor + themeLegend
+
 ggplot(dataAll, aes(speedBase, lifetime)) +
-  geom_point(aes(color = generator), alpha = 1/50) +
-  facet_grid(. ~ generator) +
+  geom_point(aes(color = groupTag), alpha = 1/50) +
+  facet_grid(groupTag ~ generator) +
   geom_smooth() +
   xlab("Hitrost premikanja") + ylab("Življenska doba") +
-  themeNoLegend
+  guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+  legendGroupsColor +
+  themeNoYStrip
 
-### 7
+
+### 7: smooth-jitter-facet_speedBase-energyCollected_generator
+# ggplot(dataAll, aes(speedBase, energyCollected)) +
+#   geom_jitter(aes(color = generator), alpha = 1/25) +
+#   facet_grid(. ~ generator) +
+#   geom_smooth(size = 1) +
+#   coord_cartesian(ylim = c(0, 15)) +
+#   xlab("Hitrost premikanja") + ylab("Število nabranih virov energije") +
+#   themeNoLegend
+
+# ggplot(dataAll, aes(speedBase, energyCollected)) +
+#   geom_jitter(aes(color = groupTag), alpha = 1/25) +
+#   facet_grid(groupTag ~ generator) +
+#   geom_smooth(size = 1) +
+#   coord_cartesian(ylim = c(0, 15)) +
+#   xlab("Hitrost premikanja") + ylab("Število nabranih virov energije") +
+#   guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+#   legendGroupsColor +
+#   themeNoYStrip
+
 ggplot(dataAll, aes(speedBase, energyCollected)) +
-  geom_jitter(aes(color = generator), alpha = 1/25) +
-  facet_grid(. ~ generator) +
-  geom_smooth(size = 1) +
+  geom_jitter(aes(color = groupTag), alpha = 1/25) +
+  facet_grid(groupTag ~ generator) +
+  geom_smooth(method = "lm", formula = y ~ x, size = 1) +
   coord_cartesian(ylim = c(0, 15)) +
   xlab("Hitrost premikanja") + ylab("Število nabranih virov energije") +
-  themeNoLegend
+  guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+  legendGroupsColor +
+  themeNoYStrip
+
+
+### none: boxplot
+qplot(altruism, lifetime, data = dataAllF, geom = "boxplot", fill = groupTag) +
+  coord_cartesian(ylim = c(0, 300)) +
+  xlab("Stopnja altruizma") + ylab("Življenska doba") +
+  legendGroups +
+  themeLegend
+
+### none:
+ggplot(dataAllE, aes(speedBase, lifetime)) +
+  geom_point(aes(color = groupTag), alpha = 1/1) +
+  geom_smooth() +
+  xlab("Hitrost premikanja") + ylab("Življenska doba") +
+  legendGroupsColor +
+  themeLegend
+
+### none: smooth-jitter-facet_speedBase-energyCollected_generator-genF-smooth
+ggplot(dataAllF, aes(speedBase, energyCollected)) +
+  geom_jitter(aes(color = groupTag), alpha = 1/2) +
+  geom_smooth(size = 1, aes(color = groupTag)) +
+  xlab("Hitrost premikanja") + ylab("Število nabranih virov energije") +
+  legendGroupsColor +
+  themeLegend
+
+
+#####################
+# plot generator curves
+###
+
+# plot(x = NULL, xlim = c(0, 55), ylim = c(-1, 1), xlab = "Cas", ylab = "Vrednost", axes = FALSE);
+# axis(1, seq(0, 55, by = 5), lwd.ticks = 2);
+# axis(2, seq(-1, 1, by = 0.25), lwd.ticks = 2);
+# abline(v = seq(0, 55, by = 5), col = "lightgray");
+# abline(h = seq(-1, 1, by = 0.25), col = "lightgray");
+# xspline(data50$x, data50$y, shape = 1)
+
+# plot(x = NULL, xlim = c(0, 55), ylim = c(-1, 1), xlab = "Cas", ylab = "Vrednost", axes = FALSE);
+# axis(1, seq(0, 55, by = 5), lwd.ticks = 2);
+# axis(2, seq(-1, 1, by = 0.5), lwd.ticks = 2);
+# abline(h = seq(-1, 1, by = 0.5), v = seq(0, 55, by = 5), col = "lightgray");
+# xspline(data50$x, data50$y, shape = 1)
+
+plot(x = NULL, xlim = c(0, 55), ylim = c(-1, 1), main = "Krivulja nevtralnega generatorja", xlab = "Čas", ylab = "Vrednost", axes = FALSE);
+axis(1, seq(0, 55, by = 5), lwd.ticks = 2);
+axis(2, seq(-1, 1, by = 0.5), lwd.ticks = 2);
+abline(h = seq(-1, 1, by = 0.5), v = seq(0, 55, by = 5), col = "lightgray")
